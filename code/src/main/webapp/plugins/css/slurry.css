@@ -1,0 +1,272 @@
+.slurry_content{
+  width:100%;
+  height:100%;
+  position:relative;
+  overflow:hidden;
+}
+
+.slurry_com_head{
+  width:100%;
+  height:65px;
+  position:relative;
+  top:0;
+  left:0;
+}
+
+.slurry_main{
+  position:absolute;
+  top:65px;
+  bottom:0px;
+  left:0px;
+  right:0px;
+}
+
+.slurry_container{
+  background-color:white;
+  position:absolute;
+  left:50%;
+  top:50%;
+  transform:translate(-50%,-50%);
+  -webkit-transform:translate(-50%,-50%);
+}
+
+.bg{
+  width:100%;
+  height:100%;
+  display:block;
+  margin: 0 auto;
+}
+
+/******** wigits ***********/
+/*
+ *  _____________
+ * |     |_______|
+ * |_____|_______|
+ */
+.hold1{
+  width:9.6%;
+  height:7%;
+  position:absolute;
+  background-color:#C7C5C7;
+  border:1px solid black;
+}
+
+.hold1 .t1{
+  position:absolute;
+  left:1%;
+  top:3%;
+  height:47%;
+  width:28%;
+  text-align:center;
+  overflow:hidden;
+}
+
+.hold1 .t2{
+  position:absolute;
+  left:1%;
+  bottom:3%;
+  height:47%;
+  width:28%;
+  text-align:center;
+  overflow:hidden;
+}
+
+.hold1 .v1{
+  position:absolute;
+  right:1%;
+  top:3%;
+  height:45%;
+  width:66%;
+  background-color:#7E31FB;
+  text-align:right;
+}
+
+.hold1 .v2{
+  position:absolute;
+  right:1%;
+  bottom:3%;
+  height:45%;
+  width:66%;
+  background-color:#7E31FB;
+  text-align:right;
+}
+
+.hold1 .ht:after,.hold1 .vt:after{
+  content:"";
+  height:100%;
+  display:inline-block;
+  vertical-align:middle;
+}
+
+.value{
+  color:white;
+  font-size: 1vw;
+  vertical-align:middle;
+}
+
+.vt,.ht{
+  font-size:0px;
+}
+
+.slurry_title{
+  font-size:1vw;
+  vertical-align:middle;
+}
+
+/**
+ * _____________
+ * |___________|
+ * |___________|
+ */
+.hold2{
+  width:7.24%;
+  height:7.16%;
+  position:absolute;
+  background-color:#C7C5C7;
+  border:1px solid black;
+}
+
+.hold2 .ht{
+  width:100%;
+  height:45%;
+  text-align:center;
+  font-size:0px;
+}
+
+.hold2 .vt{
+  width:100%;
+  height:46%;
+  text-align:right;
+  background-color:#7E31FB;
+  font-size:0px;
+}
+
+.hold2 .ht:after,.hold2 .vt:after{
+  content:"";
+  height:100%;
+  display:inline-block;
+  vertical-align:middle;
+}
+
+/**
+ *  _________________________
+ * |____________|____________|
+ */
+.hold3{
+  width:13.4%;
+  height:3.2%;
+  position:absolute;
+  background-color:#C7C5C7;
+  border:1px solid black;
+}
+
+.hold3 .ht{
+  position:absolute;
+  width:37%;
+  left:4%;
+  top:1%;
+  height:98%;
+}
+
+.hold3 .vt{
+  position:absolute;
+  width:58%;
+  height:98%;
+  right:1%;
+  top:1%;
+  text-align:right;
+  background-color:#7E31FB;
+}
+
+.hold3 .ht:after,.hold3 .vt:after{
+  content:"";
+  height:100%;
+  display:inline-block;
+  vertical-align:middle;
+}
+
+/******* 位置 ********/
+/*压力泵*/
+#pressure_pump_1{
+  left:10.54%;
+  top:8.6%;
+}
+
+#pressure_pump_2{
+  left:36.97%;
+  top:12.9%;
+}
+
+#pressure_pump_3{
+  left:30.23%;
+  top:33.33%;
+}
+#pressure_pump_4{
+  left:4.5%;
+  top:44.5%;
+}
+#pressure_pump_5{
+  left:19.54%;
+  top:44.27%;
+}
+
+#pressure_pump_6{
+  left:10.83%;
+  top:53.38%;
+}
+/*中继泵*/
+#relay_pump_1{
+  left:3.8%;
+  top:71.48%;
+}
+
+#relay_pump_2{
+  left:16.91%;
+  top:69.8%;
+}
+
+#relay_pump_3{
+  left:3.58%;
+  top:85.8%;
+}
+
+#relay_pump_4{
+  left:16.98%;
+  top:85.93%;
+}
+/*排浆泵*/
+#exhaust_pump_1{
+  left:31.33%;
+  top:72.39%;
+}
+
+#exhaust_pump_2{
+  left:25.76%;
+  top:86.71%;
+}
+
+#exhaust_pump_3{
+  left:41.14%;
+  top:88.54%;
+}
+
+/*冲洗泵*/
+#rinse_pump_1{
+  left:54.46%;
+  top:6.51%;
+}
+
+#rinse_pump_2{
+  left:81.47%;
+  top:7.94%;
+}
+
+#rinse_pump_3{
+  left:60%;
+  top:36.20%;
+}
+
+#rinse_pump_4{
+  left:65.44%;
+  top:67.18%;
+}

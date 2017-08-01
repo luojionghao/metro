@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.zdmake.metro.dao.IMetroOpreateDao">
+<resultMap id="opreateResultMap" type="cn.zdmake.metro.model.MetroUserOpreateRec" >
+	<id property="id" column="id"/>
+	<result property="userId" column="user_id"/>
+	<result property="username" column="username"/>
+	<result property="visitMenu" column="visit_menu"/>
+	<result property="operation" column="operation"/>
+	<result property="loginIp" column="login_ip"/>
+	<result property="visitTime" column="visit_time"/>
+</resultMap>
+
+<select id="countObjs" parameterType="java.util.HashMap" resultType="java.lang.Integer">
+	select count(1) from metro_user_opreate_rec
+</select>
+
+<select id="findObjsList" parameterType="java.util.HashMap" resultMap="opreateResultMap">
+	select * from metro_user_opreate_rec order by visit_time desc limit #{start},#{pageSize}
+</select>
+
+<insert id="insertObjs" parameterType="java.util.HashMap">
+	INSERT INTO metro_user_opreate_rec(user_id,username,visit_menu,operation,login_ip,visit_time,create_time)
+	VALUES
+	<foreach collection="logs" item="log" separator=",">
+		(#{log.userId},#{log.username},#{log.visitMenu},#{log.operation},#{log.loginIp},#{log.visitTime},now())
+	</foreach>
+</insert>
+</mapper>

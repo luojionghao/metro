@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.zdmake.metro.dao.ILoginDao">
+<resultMap id="luserResultMap" type="cn.zdmake.metro.model.MetroUser" >
+	<id property="id" column="id"/>
+	<result property="roleId" column="role_id"/>
+	<result property="username" column="username"/>
+	<result property="name" column="name"/>
+	<result property="sex" column="sex"/>
+	<result property="loginTime" column="login_time"/>
+	<result property="loginIp" column="login_ip"/>
+	<result property="onlineStatus" column="online_status"/>
+	<result property="createTime" column="create_time"/>
+	<collection property="deptList" javaType="java.util.List" ofType="cn.zdmake.metro.model.MetroDept">
+		<id property="id" column="dept_id"/>
+	</collection>
+</resultMap>
+
+<select id="findUserByNameAndPass" parameterType="java.util.HashMap" resultMap="luserResultMap">
+	SELECT 
+		u.*,dr.dept_id
+	FROM (select * from metro_user where username=#{username} and password=#{password} and is_del=0) u
+	Left JOIN metro_user_dept_rel dr ON u.id=dr.user_id 
+</select>
+
+<update id="updateUserOnlineStatus" parameterType="java.util.HashMap">
+	update metro_user set online_status=#{status}
+	<if test="status==1">
+		,login_time=now(),login_ip=#{loginIp}
+	</if>
+	where id=#{userId}
+</update>
+</mapper>

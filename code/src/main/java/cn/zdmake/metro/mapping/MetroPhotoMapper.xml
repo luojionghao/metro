@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.zdmake.metro.dao.IMetroPhotoDao">
+<resultMap id="photoResultMap" type="cn.zdmake.metro.model.MetroPhoto" >
+	<id property="id" column="id"/>
+	<result property="photoName" column="photo_name"/>
+	<result property="photoUrl" column="photo_url"/>
+	<result property="photoType" column="photo_type"/>
+	<result property="updateTime" column="update_time"/>
+	<result property="createTime" column="create_time"/>
+</resultMap>
+
+<select id="countObjs" parameterType="java.util.HashMap" resultType="java.lang.Integer">
+	select count(1) from metro_photos 
+	<if test="photoId!=null">
+		where id=#{photoId}
+	</if>
+</select>
+
+<select id="findObjsList" parameterType="java.util.HashMap" resultMap="photoResultMap">
+	select * from metro_photos 
+	<if test="photoId!=null">
+		where id=#{photoId}
+	</if>
+	limit #{start},#{pageSize}
+</select>
+
+<delete id="deleteObj" parameterType="java.util.HashMap">
+	delete from metro_photos where id=#{photoId}
+</delete>
+
+<insert id="insertObj" parameterType="cn.zdmake.metro.model.MetroPhoto" useGeneratedKeys="true" keyProperty="id">
+	insert into metro_photos(photo_name,photo_url,photo_type,create_time)
+					values(#{photoName},#{photoUrl},#{photoType},now())
+</insert>
+
+<update id="updateObj" parameterType="java.util.HashMap">
+	update metro_photos set photo_name=#{photoName} ,
+						   photo_url=#{photoUrl},
+						   photo_type=#{photoType}
+						   where id=#{photoId}
+</update>
+<select id="findByType" parameterType="int" resultMap="photoResultMap">
+	select * from metro_photos where photo_type=#{photoType}
+</select>
+
+<select id="findObjsListByIntervalId" parameterType="java.util.HashMap" resultMap="photoResultMap">
+SELECT * FROM metro_photos p
+where EXISTS(SELECT * FROM metro_line_interval_lr lr 
+			WHERE lr.interval_id=#{intervalId} 
+				AND lr.left_or_right=#{leftOrRight} 
+				AND lr.cutter_photo_id=p.id 
+				OR lr.screw_photo_id=p.id OR lr.slurry_photo_id=p.id)
+</select>
+</mapper>

@@ -1,0 +1,83 @@
+.dict_table{
+	text-align: center;
+}
+.box-header{
+	padding: 10px;
+}
+.box-header>li{
+	float: left;
+	margin-right: 10px;
+}
+.input_file{
+	width: 190px;
+	margin-top: 3px;
+}
+.head_btn{
+	display: inline-block;
+	width: 94px;
+	height: 26px;
+	background: #f9f9f9;
+	border: 1px solid #979797;
+	border-radius: 8px;
+	font-weight: normal;
+	font-size: 14px;
+	text-align: center;
+	line-height: 26px;
+	outline: none;
+}
+.mil_num{
+	width: 78px;
+	height: 26px;
+	border: 1px solid #979797;
+	border-radius: 4px;
+	font-weight: normal;
+	padding-left: 6px;
+}
+.dict_content{
+    height:100%;
+}
+
+.dict_table a{
+	text-align: center;
+	color: #4a4a4a;
+}
+.edit_btn,.del_btn{
+	padding: 0 5px;
+}
+/*删除弹窗*/
+.pop{
+	width: 250px;
+	height: 110px;
+	background: white;
+	border-radius: 4px;
+	font-size: 16px;
+	text-align: center;
+	color: #4a4a4a;
+}
+.pop_title{
+	height: 70px;
+	line-height: 70px;
+}
+.pop_btn a{
+	display: block;
+	width: 50%;
+	height: 40px;
+	line-height: 40px;
+	color: #4a4a4a;
+	box-sizing: border-box;
+	border-top: 1px solid #979797;
+}
+.cancel_btn{
+	float: left;
+	border-right: 1px solid #979797;
+}
+.sure_btn{
+	float: right;
+}
+
+.modal-content{
+	width: 582px;
+	background:#ffffff;
+	border: 1px solid #979797;
+	border-radius: 8px;
+}

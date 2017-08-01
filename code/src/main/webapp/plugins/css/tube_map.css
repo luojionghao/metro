@@ -1,0 +1,97 @@
+.content-wrapper {
+	background-color: white;
+}
+
+#map_block {
+	width: 100%;
+	background: #f9f9f9;
+	height:100%;
+}
+
+/* 标签样式 */
+div.tag {
+	font-size: 18px;
+	position: absolute;
+	color: white;
+	white-space: nowrap;
+	display:block;
+}
+
+span.tag {
+	padding: 8px;
+	display: inline-block;
+}
+
+div.box {
+	width: 400px;
+	background-color: yellow;
+	height: 20px;
+}
+
+/* 线路和信息框 */
+.hide {
+	display: none;
+}
+
+.show {
+	display: block;
+}
+
+.switchBtn {
+	float: right;
+}
+
+.leftRight {
+	display: block;
+	width: 100%;
+	height: 100%;
+	padding-top: 5px;
+	overflow-y: scroll;
+}
+
+.leftRight::-webkit-scrollbar{
+	display:none;
+}
+
+.leftRight span {
+	display: block;
+	line-height:22px;
+}
+
+.content {
+	width: 100%;
+	height: 100%;
+	padding: 20px;
+	box-sizing: border-box;
+	overflow: hidden;
+}
+
+.loading {
+	width: 100%;
+	height: 100%;
+	background-image:url(../images/map_loading.gif);
+	background-repeat: no-repeat;
+	background-position: center center;
+	background-size: 100%;
+	display: block;
+}
+
+.tiddle {
+	width: 45px;
+	height: 30px;
+	background-image:url(../images/map_tagArrow.svg);	
+	background-size: "90px 60px";
+	background-repeat: no-repeat;
+	position: absolute;
+	bottom: -35px;
+	left: 50%;
+	transform: translateX(-50%);
+}
+
+.alarmRed{
+	color:red;
+}
+
+.alarmOrange{
+	color:orange;
+}

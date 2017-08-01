@@ -1,0 +1,14 @@
+{
+  "name": "jClocksGMT",
+  "homepage": "https://github.com/mcmastermind/jClocksGMT",
+  "_release": "d77a3c6bd9",
+  "_resolution": {
+    "type": "branch",
+    "branch": "master",
+    "commit": "d77a3c6bd98d0696c4da1e93a78d77c422d27f47"
+  },
+  "_source": "https://github.com/mcmastermind/jClocksGMT.git",
+  "_target": "*",
+  "_originalSource": "https://github.com/mcmastermind/jClocksGMT.git",
+  "_direct": true
+}

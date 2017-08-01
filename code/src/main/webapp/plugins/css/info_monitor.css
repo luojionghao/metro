@@ -1,0 +1,865 @@
+/***************盾构信息监控/市*************/
+.state_wrap{
+	height: 100%;
+	display: -webkit-box;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+	display:flex;
+	-webkit-box-orient:vertical;
+    -webkit-box-direction:normal;
+        -ms-flex-direction:column;
+	flex-direction:column;
+}
+.state_wrap,.row{
+	width: 100%;
+	overflow: hidden;
+}
+.table_title{
+	height: 42px;
+	line-height: 42px;
+	font-size: 16px;
+	font-weight: bold;
+	font-family: "微软雅黑";
+	text-align: left;
+	color: #4a4a4a;
+	padding: 0;
+}
+.table_title span{
+	margin-left: 24px;
+}
+.table_title span:first-child{
+	margin-left: 10px;
+}
+.state_select{
+	width: 132px;
+	height: 27px;
+	line-height: 27px;
+	border: 1px solid #d2d6de;
+	border-radius: 8px;
+	outline: none;
+	font-size: 16px;
+	color: #4a4a4a;
+	padding-left: 12px;
+	font-weight: normal;
+}
+.abnormal_num{
+	color: #c00404;
+}
+#settlement_sbtn{
+	margin-left:10px;
+	border-top-left-radius:3px;
+	border-bottom-left-radius:3px;
+}
+
+/*****************************盾构信息监控/区间****************************/
+/* 监测数据 */
+.grid{
+    height:500px;
+}
+.grid-left{
+    height:100%;
+    border:1px solid black;
+}
+.grid-right{
+    height:100%;
+}
+#prosture{
+    height:80%;
+}
+#chart-right{
+    height:20%;
+    background-color:pink;
+}
+.select_text{
+	float: left;
+	line-height: 54px;
+	margin-left: 15px;
+}
+.input-group{
+	float: left;
+	width: 250px;
+}
+
+.settlement_select>.select2-container--default .select2-selection--single{
+	border-right: none;
+	border-radius: 4px 0 0 4px;
+}
+.settlement_select>.select2-container .select2-selection--single{
+	height: 34px;
+}
+
+/**************************盾构信息监控 / 左右线**************************/
+/*刀盘*/
+.cutter_content{
+	width:100%;
+	height:100%;
+	display: -webkit-box;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: flex;
+	-webkit-box-orient:vertical;
+    -webkit-box-direction:normal;
+        -ms-flex-direction:column;
+            flex-direction:column;
+}
+
+.com_head{
+	height: 65px;
+	border-bottom: 1px solid #f4f4f4;
+	margin-top:4px;
+	-webkit-box-flex:0;
+        -ms-flex-positive:0;
+            flex-grow:0;
+}
+.com_head_left{
+	width: 50%;
+	height: 100%;
+	float: left;
+	position: relative;
+}
+.current_loop{
+	float: left;
+	width: 131px;
+	height: 100%;
+	background: #6e0b0a;
+	color: white;
+	text-align: center;
+}
+.current_loop_text{
+	font-weight: bold;
+}
+.stop_btn{
+	width: 50px;
+	background: white;
+	color: #6e0b0a;
+	border: none;
+	border-radius: 4px;
+	font-size: 12px;
+	cursor:unset;
+}
+.line_info{
+	float: left;
+	left: 151px;
+}
+.line_info_text{
+	color: #6e0b0a;
+	font-weight: bold;
+	margin-bottom: 5px;
+}
+.line_info_time{
+	font-size: 12px;
+}
+.now_time{
+	margin-left: 15px;
+}
+.now_time em{
+	margin-left: 8px;
+}
+.com_head_right{
+	float: right;
+	width: 50%;
+	height: 100%;
+	position: relative;
+	overflow:hidden;
+}
+.knife_data{
+	right: 0;
+	width: 100%;
+}
+.knife_data li{
+	float: left;
+	width: 33.3%;
+	box-sizing: border-box;
+	border-right: 1px solid #d2d6de;
+	text-align: center;
+	font-size: 12px;
+}
+.knife_data li:last-child{
+	border-right: none;
+}
+.first_row{
+	margin-bottom: 6px;
+}
+.knife_main{
+	width: 100%;
+	height:70%;	
+	padding: 6px;
+	-webkit-box-flex:1;
+    -ms-flex-positive:1;
+    flex-grow:1;
+    overflow-x:hidden;
+    overflow-y:scroll;
+}
+.knife_main_bg{
+	width: 100%;
+	color: black;
+	font-size: 12px;
+	position: relative;
+}
+
+.ks_bg{
+	width:100%;
+}
+
+.pin{
+	position: absolute;
+}
+
+.warn_red{
+	color:red;
+}
+
+.warn_orange{
+	color:orange;
+}
+
+.total_power,.knife_torque,.forward_speed,
+.knife_velocity,.gear_oil,.hydraulic_oil,
+.prepare,.has{
+	left:14%;
+}
+
+.total_power{
+	top:5.8%;
+}
+
+.knife_torque{
+	top:14.5%;
+}
+
+.forward_speed{
+	top:23.9%;
+}
+
+.knife_velocity{
+	top:31.7%;
+}
+
+.gear_oil{
+	top:41.3%;
+}
+
+.hydraulic_oil{
+	top:50.7%;
+}
+
+.prepare{
+	top:61.3%;
+}
+
+.has{
+	top:71.3%;
+}
+
+/*行程，油压*/
+.route_num1,.oil_num1{
+	left: 25.7%;
+}
+.route_num1{
+	top: 2.5%;
+}
+.oil_num1{
+	top: 9%;
+}
+.route_num2,.oil_num2{
+	left: 25.7%;
+}
+.route_num2{
+	top: 75.7%;
+}
+.oil_num2{
+	top: 82.5%;
+}
+.route_num3,.oil_num3{
+	left: 55.7%;
+}
+.route_num3{
+	top: 2.5%;
+}
+.oil_num3{
+	top: 9%;
+}
+.route_num4,.oil_num4{
+	left: 55.7%;
+}
+.route_num4{
+	top: 75.7%;
+}
+.oil_num4{
+	top: 82.5%;
+}
+.route_num5,.oil_num5{
+	left: 68%;
+}
+.route_num5{
+	top: 2.5%;
+}
+.oil_num5{
+	top: 8.8%;
+}
+.route_num6,.oil_num6{
+	left: 90.5%;
+}
+.route_num6{
+	top: 2.5%;
+}
+.oil_num6{
+	top: 8.8%;
+}
+.route_num7,.oil_num7{
+	left: 68%;
+}
+.route_num7{
+	top: 39.7%;
+}
+.oil_num7{
+	top: 46%;
+}
+.route_num8,.oil_num8{
+	left: 90.5%;
+}
+.route_num8{
+	top: 39.7%;
+}
+.oil_num8{
+	top: 46%;
+}
+/*土压*/
+.earth_pressure1,.earth_pressure2,.earth_pressure3,.earth_pressure4,.earth_pressure5{
+	font-size:16px;
+}
+
+.earth_pressure1{
+	top: 22.8%;
+	left: 37.8%;
+}
+.earth_pressure2{
+	top: 38.4%;
+	left: 47%;
+}
+.earth_pressure3{
+	top: 46.7%;
+	left: 26.6%;
+}
+.earth_pressure4{
+	top: 59.1%;
+	left: 47%;
+}
+.earth_pressure5{
+	position: absolute;
+	top: 68.7%;
+	left: 37.8%;
+}
+/*管道*/
+.all_hinge{
+	top: 28.3%;
+	left: 78.5%;
+	font-size: 14px;
+}
+/*同步注浆量*/
+.sync_grout_amount{
+	top: 62.4%;
+	left: 77%;
+}
+.grout_amount1,.grout_amount2,.grout_amount3,.grout_amount4{
+	left: 76.2%;
+}
+.grout_amount1{
+	top: 71.1%;
+}
+.grout_amount2{
+	top: 75%;
+}
+.grout_amount3{
+	top: 79.7%;
+}
+.grout_amount4{
+	top: 83.3%;
+}
+.pressure1,.pressure2,.pressure3,.pressure4{
+	left: 82.4%;
+}
+.pressure1{
+	top: 71.1%;
+}
+.pressure2{
+	top: 75%;
+}
+.pressure3{
+	top: 79.7%;
+}
+.pressure4{
+	top: 83.3%;
+}
+
+/*螺旋*/
+.spiral_content{
+	width:100%;
+	height:100%;
+	display: -webkit-box;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+	display:flex;
+	-webkit-box-orient:vertical;
+    -webkit-box-direction:normal;
+    -ms-flex-direction:column;
+	flex-direction:column;
+}
+
+.spiral_bg{
+	width: 100%;
+	color: black;
+	font-size: 12px;
+	position: relative;
+}
+/*土压*/
+.spiral_soil_pressure{
+	height: 100%;
+	font-size: 12px;
+	position: relative;
+}
+.soil_pressure1,.soil_pressure2,.soil_pressure3,
+.soil_pressure4,.soil_pressure5{
+	position: absolute;
+	left: 24.5%;
+	font-size:16px;
+}
+.soil_pressure1{
+	top: 21.5%;
+}
+.soil_pressure2{
+	top: 38%;
+}
+.soil_pressure3{
+	top: 55.5%;
+}
+.soil_pressure4{
+	top: 74.3%;
+}
+.soil_pressure5{
+	top: 92%;
+}
+/*前后舱压力*/
+.cabin_pressure1{
+	position: absolute;
+	top: 9%;
+	left: 51%;
+}
+.cabin_pressure2{
+	position: absolute;
+	top: 13%;
+	left: 51%;
+}
+.cabin_pressure3{
+	position: absolute;
+	top: 9%;
+	left: 60%;
+}
+.cabin_pressure4{
+	position: absolute;
+	top: 13%;
+	left: 60%;
+}
+.cabin_pressure5{
+	position: absolute;
+	top: 17%;
+	left: 47.5%;
+}
+.cabin_pressure6{
+	position: absolute;
+	top: 21%;
+	left: 47.5%;
+}
+.cabin_pressure7{
+	position: absolute;
+	top: 17%;
+	left: 63.5%;
+}
+.cabin_pressure8{
+	position: absolute;
+	top: 21%;
+	left: 63.5%;
+}
+/*前后舱量*/
+.cabin_amount1{
+	position: absolute;
+	top: 27%;
+	left: 50%;
+}
+.cabin_amount2{
+	position: absolute;
+	top: 30.5%;
+	left: 51.5%;
+}
+.cabin_amount3{
+	position: absolute;
+	top: 27%;
+	left: 63.5%;
+}
+.cabin_amount4{
+	position: absolute;
+	top: 30.5%;
+	left: 62%;
+}
+.rotate_speed,.torque,.oil_pressure,.total_bentonite,.strobe_open{
+	font-size:16px;
+}
+/*转速*/
+.rotate_speed{
+	position: absolute;
+	top: 77%;
+	left: 42.5%;
+}
+/*扭矩*/
+.torque{
+	position: absolute;
+	top: 63.5%;
+	left: 50.5%;
+}
+/*油压*/
+.oil_pressure{
+	position: absolute;
+	top: 50%;
+	left: 59%;
+}
+/*膨润土总量*/
+.total_bentonite{
+	position: absolute;
+	top: 76.5%;
+	left: 66%;
+}
+/*后闸门开度*/
+.strobe_open{
+	position: absolute;
+	top: 26%;
+	left: 79%;
+}
+/*泡沫*/
+.gas_flow,.liquid_flow,.multiple,.stoste{
+	position: absolute;
+	left: 80.3%;
+}
+.gas_flow{
+	top: 56.8%;
+}
+.liquid_flow{
+	top: 61.5%;
+}
+.multiple{
+	top: 65.8%;
+}
+.stoste{
+	top: 69.8%;
+}
+
+/*导向*/
+.guide_content{
+    height:100%;
+    width:100%;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display:flex;
+    -webkit-box-orient:vertical;
+    -webkit-box-direction:normal;
+    -ms-flex-direction:column;
+    flex-direction:column;
+}
+
+.guide_main{
+	overflow: auto;
+    height:70%;
+    width:100%;
+    -webkit-box-flex:1;
+    -ms-flex-positive:1;
+    flex-grow:1;
+}
+.guide_head_table,.coord_data_table,.cutter_table{
+	width: 100%;
+	table-layout:fixed;
+	white-space:nowrap;
+	text-overflow: ellipsis;
+}
+.guide_head_table tr:first-child,.coord_data_table tr:first-child,.cutter_table caption{
+	background: #6e0b0a;
+	color: white;
+	text-align: center;
+}
+.guide_head_table td{
+	width: 21.5%;
+	border: 1px solid #d2d6de;
+	text-align: center;
+}
+.guide_head_table td:first-child{
+	width: 14%;
+}
+
+.coord_data_title{
+	color: #6e0b0a;
+	font-size: 16px;
+	font-weight: bold;
+	margin: 30px 0 5px 10px;
+}
+.angle{
+	margin-left: 25px;
+}
+.coord_data_table td{
+	width: 25%;
+	height: 35px;
+	line-height: 35px;
+	text-align: center;
+	border: 1px solid #d2d6de;
+}
+.cutter_table td{
+	width: 8%;
+	height: 35px;
+	line-height: 35px;
+	text-align: center;
+	border: 1px solid #d2d6de;
+}
+.cutter_table td:first-child{
+	width: 12%;
+}
+
+
+/*统计报表*/
+.tab_report_forms{
+	position: relative;
+}
+.tab_list{
+	width: 100%;
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	border-top: 1px solid #ddd;
+}
+.tab_list>li{
+	display: block;
+	float: left;
+	border-bottom: 3px solid transparent;
+	margin-right: 5px;
+	border-left: 1px solid transparent;
+	border-right: 1px solid transparent;
+}
+.tab_list>li.pre{
+	background: white;
+	border-top: none;
+	border-bottom-color: #3c8dbc;
+	border-left-color: #ddd;
+	border-right-color: #ddd;
+	margin-top: -1px;
+	border-top: 1px solid transparent;
+}
+.tab_list>li>a{
+	display: block;
+	padding: 10px 15px;
+	text-align: center;
+	color: #444;
+}
+
+#tab-pane1,#tab-pane2,#tab-pane3,#tab-pane4,#tab-pane5{
+	overflow-y: auto;
+}
+/*材料消耗*/
+.com_stat_header,.plan_stat_header,.data_header{
+	padding: 10px;
+}
+.cylinder_num{
+	margin-right: 24px;
+}
+.com_stat_header input{
+	width: 78px;
+	height: 26px;
+	border: 1px solid #979797;
+	border-radius: 4px;
+	padding-left: 5px;
+	outline: none;
+}
+.com_stat_header select{
+	width:146px;
+	height:26px;
+	border:1px solid #979797;
+	border-radius:8px;
+	outline: none;
+}
+
+/*进度统计*/
+.query_btn_box{
+	margin-left: 28px;
+}
+.title_list{
+	margin-bottom: 8px;
+}
+.wran_head_left input.check_box{
+	width: 13px;
+	height: 13px;
+	margin-right: 8px;
+}
+/*数据分析*/
+.nav-tabs{
+	z-index: 99;
+	background: white;
+}
+#tab-pane5{
+	width: 100%;
+	overflow-y: auto;
+	padding-bottom: 20px;
+}
+.data_analysis{
+	width: 96%;
+	margin: 0 auto;
+}
+.query_pop{
+	width: 701px;
+	max-height: 100%;
+	border-radius: 8px;
+	background: #ffffff;
+	font-size: 16px;
+	padding: 10px;
+}
+.query_left,.query_right{
+	width: 50%;
+	box-sizing: border-box;
+	border: 1px solid #979797;
+}
+.query_left{
+	float: left;
+}
+.query_right{
+	float: right;
+}
+.query_parameter_head{
+	height: 42px;
+	line-height: 42px;
+	border-bottom: 1px solid #979797;
+	padding: 0 10px;
+}
+.left_parameter,.right_parameter{
+	width: 182px;
+	height: 26px;
+	border: 1px solid #979797;
+	border-radius: 4px;
+	outline: none;
+	margin-left: 13px;
+}
+.query_left_main,.query_right_main{
+	padding: 10px;
+}
+.query_left_main li,.query_right_main li{
+	margin-bottom: 3px;
+}
+.query_left_main input,.query_right_main input{
+	margin-right: 14px;
+}
+.query_pop_bottom{
+	text-align: right;
+}
+.query_pop_bottom a{
+	width: 86px;
+	height: 32px;
+	display: inline-block;
+	border: 1px solid #4a4a4a;
+	border-radius: 8px;
+	text-align: center;
+	line-height: 32px;
+	font-size: 16px;
+	color: #222222;
+	margin-top: 16px;
+	margin-left: 10px;
+}
+.date{
+	width: 120px;
+}
+.input-group-addon{
+	padding: 0;
+}
+.wran_head_left input{
+	width: 98px;
+}
+#datepicker1, #datepicker2{
+	width: 95px;
+}
+.to{
+	margin: 0 6px 0 6px;
+}
+.radio_box{
+	margin-left: 15px;
+}
+.module_btn{
+	text-align: center;
+	padding: 0px 0 5px 0;
+}
+.module_btn button{
+	background: white;
+	padding: 3px 10px;
+	border: 1px solid #d2d6de;
+	border-radius: 4px;
+	outline: none;
+	margin: 0 5px;
+}
+.module_active{
+	color: #5794c0;
+}
+.module_btn button:hover{
+	color: #5794c0;
+}
+
+/* 监测数据 */
+.gridArea{
+    width:100%;
+    height:90%;
+}
+
+.settlement_header{
+	width:100%;
+	height:54px;
+	position:absolute;
+	top:0;
+	left:0;
+}
+
+.gridWrap{
+	width:100%;
+	height:auto;
+	position:absolute;
+	top:54px;
+	bottom:0px;
+	left:0px;
+}
+
+.tabWrap{
+	width:100%;
+	height:100%;
+	position:relative;
+}
+
+/* 导向*/
+
+.grid{
+    height:500px;
+}
+
+.grid-left{
+    height:100%;
+    border:1px solid black;
+}
+
+.grid-right{
+    height:100%;
+}
+
+#prosture{
+    height:70%;
+}
+
+#chart-right{
+    height:30%;
+    background-color:pink;
+    border:1px solid black;
+    border-left:1px solid transparent;
+}
+
+/* 综合 */
+.col-dark-bg{
+    background-color:#d8d8d8;
+}
