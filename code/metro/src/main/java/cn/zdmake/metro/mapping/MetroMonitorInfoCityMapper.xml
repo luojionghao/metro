@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.zdmake.metro.dao.IMetroMonitorCityDao">
+<resultMap type="cn.zdmake.metro.model.MonitorInfoCity" id="monitorCityResultMap">
+	<result property="lineName" column="line_name"/>
+	<result property="lineNo" column="line_no"/>
+	<result property="intervalName" column="interval_name"/>
+	<result property="intervalMark" column="interval_mark"/>
+	<result property="buildStatus" column="build_status"/>
+	<result property="leftOrRight" column="left_or_right"/>
+	<result property="ringNum" column="ring_num"/>
+</resultMap>
+
+<select id="countMonitorInfoCityDatas" parameterType="java.util.HashMap" resultType="java.lang.Integer">
+	SELECT 
+		count(1)
+	FROM metro_line_interval i	
+	INNER JOIN metro_line_interval_lr lr ON i.id=lr.interval_id 
+			<if test="buildStatus!=null">AND lr.build_status=#{buildStatus}</if>
+	INNER JOIN (select * from metro_line <if test="lineId!=null">where id=#{lineId}</if>) l ON i.line_id=l.id
+	INNER JOIN (select * from metro_city where id=1) c ON l.city_id=c.id
+</select>
+
+<select id="findMonitorInfoCityDatas" parameterType="java.util.HashMap" resultMap="monitorCityResultMap">
+	SELECT
+	l.line_no,l.line_name,
+	i.interval_name,i.interval_mark,lr.build_status,
+	lr.left_or_right,lr.ring_num
+	FROM metro_line_interval i
+	INNER JOIN metro_line_interval_lr lr ON i.id=lr.interval_id
+	<if test="buildStatus!=null">AND lr.build_status=#{buildStatus}</if>
+	INNER JOIN (select * from metro_line <if test="lineId!=null">where id=#{lineId}</if>) l ON i.line_id=l.id
+	INNER JOIN (select * from metro_city where id=1) c ON l.city_id=c.id
+	LIMIT #{start},#{pageSize}
+</select>
+
+	<select id="findAllMonitorInfoCityDatas" parameterType="java.util.HashMap" resultMap="monitorCityResultMap">
+		SELECT
+		l.line_no,l.line_name,
+		i.interval_name,i.interval_mark,
+		lr.left_or_right
+		FROM metro_line_interval i
+		INNER JOIN metro_line_interval_lr lr ON i.id=lr.interval_id
+		INNER JOIN (select * from metro_line <if test="lineId!=null">where id=#{lineId}</if>) l ON i.line_id=l.id
+		INNER JOIN (select * from metro_city where id=1) c ON l.city_id=c.id
+	</select>
+
+<resultMap type="cn.zdmake.metro.model.KeyValue" id="totalResultMap">
+	<result property="key" column="k"/>
+	<result property="value" column="v"/>
+</resultMap>
+<select id="findCountMechineDatas" parameterType="java.util.HashMap" resultMap="totalResultMap">
+	SELECT lr.build_status k,count(1) v FROM metro_line_interval_lr lr
+	INNER JOIN metro_line_interval i ON i.id=lr.interval_id
+	INNER JOIN (select * from metro_line <if test="lineId!=null">where id=#{lineId}</if>) l ON l.id=i.line_id
+	<if test="userId!=1">
+		INNER JOIN (select * from metro_user_data_rel 
+			<if test="userId!=null">
+				where user_id=#{userId}
+			</if>
+		) re ON lr.interval_id=re.interval_id AND lr.left_or_right=re.left_or_right 
+		INNER JOIN metro_user u ON u.id=re.user_id AND u.is_del=0		
+	</if>
+	group by lr.build_status
+</select>
+
+<select id="findMonitorInfoCity" parameterType="java.util.HashMap" resultMap="monitorCityResultMap">
+	SELECT 
+		l.line_no,l.line_name,
+		i.interval_name,i.interval_mark,lr.build_status,
+		lr.left_or_right,lr.ring_num
+	FROM (select * from metro_line_interval where id=#{intervalId}) i	
+	INNER JOIN metro_line_interval_lr lr ON i.id=lr.interval_id AND lr.left_or_right=#{leftOrRight} 			
+	INNER JOIN metro_line l ON i.line_id=l.id
+	INNER JOIN (select * from metro_city where id=1) c ON l.city_id=c.id
+</select>
+
+<resultMap id="lineIntervalMdResultMap" type="cn.zdmake.metro.model.MetroLineIntervalMd" >
+	<id property="id" column="id"/>
+	<result property="mdReId" column="md_re_id"/>
+	<result property="mdNo" column="md_no"/>
+	<result property="startElevation" column="start_elevation"/>
+	<result property="upnoceElevation" column="upnoce_elevation"/>
+	<result property="thisElevation" column="this_elevation"/>
+	<result property="thisVar" column="this_var"/>
+	<result property="sumVar" column="sum_var"/>
+	<result property="mileage" column="mileage"/>
+	<result property="updateTime" column="update_time"/>
+	<result property="createTime" column="create_time"/>
+	<result property="monitorDate" column="monitor_date"/>
+	<result property="spSpeed" column="sp_speed"/>
+</resultMap>
+
+<select id="findMonitorInfoIntervalData" parameterType="java.util.HashMap" resultMap="lineIntervalMdResultMap">
+	SELECT 
+		COALESCE(
+					t.this_var/((UNIX_TIMESTAMP(t.monitor_date)-UNIX_TIMESTAMP(t1.monitor_date))/60/60/24),
+					t.this_var
+				) sp_speed,t.* 
+	FROM
+	(
+		SELECT 
+			@rownum:=@rownum+1 rownum,b.*
+		FROM (
+			SELECT @rownum:=0,a.* FROM
+			(
+				SELECT re.monitor_date,md.* FROM
+					(SELECT * FROM metro_line_interval_md WHERE md_no=#{mdNo}) md 
+				INNER JOIN
+				metro_line_interval_md_re re ON md.md_re_id=re.id
+			) a
+			ORDER BY a.monitor_date DESC
+		) b
+	) t
+	LEFT JOIN
+	(
+		SELECT 
+			@rownum1:=@rownum1+1 rownum,b.*
+		FROM (
+			SELECT @rownum1:=0,a.* FROM
+			(
+				SELECT re.monitor_date,md.* FROM
+					(SELECT * FROM metro_line_interval_md WHERE md_no=#{mdNo}) md 
+				INNER JOIN
+				metro_line_interval_md_re re ON md.md_re_id=re.id
+			) a
+			ORDER BY a.monitor_date DESC
+		) b
+	) t1 ON t.rownum=t1.rownum-1
+	WHERE 
+		t.monitor_date 
+		BETWEEN STR_TO_DATE(#{beginTime},'%Y-%m-%d %H:%i:%s') 
+		AND STR_TO_DATE(#{endTime},'%Y-%m-%d %H:%i:%s')
+</select>
+</mapper>

@@ -1,0 +1,28 @@
+/* 覆盖原来tab的样式，实现tab倒置 */
+.nav-tabs-custom{
+    position:relative;
+    width:100%;
+    height:100%;
+    margin-bottom:0px;
+}
+
+/**
+.nav-tabs{
+    position:absolute;
+    bottom:0;
+    border-top:1px solid #ddd;
+    width:100%;
+}
+*/
+
+.nav-tabs-custom > .nav-tabs > li.active {
+    border-bottom-color: #3c8dbc;
+    border-top-color:transparent;
+}
+
+.nav-tabs-custom > .nav-tabs > li{
+    border-top: 1px solid transparent;
+    border-bottom: 3px solid transparent;
+    margin-bottom:0px;
+    margin-top:-2px;
+}

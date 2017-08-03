@@ -1,0 +1,116 @@
+.chart {
+	width: 100%;
+	height: 100%;
+	padding-bottom: 10px;
+}
+
+.chartWrap {
+	width: 100%;
+	height: auto;
+	bottom: 0;
+	top: 54px;
+	position: absolute;
+}
+
+.dataChartWrap {
+	width: 100%;
+	height: auto;
+	bottom: 24px;
+	top: 54px;
+	position: absolute;
+}
+
+.module_btn {
+	width: 100%;
+	height: 2s4px;
+	position: absolute;
+	bottom: 0;
+	left: 0;
+}
+
+.tabWrap {
+	width: 100%;
+	height: 100%;
+	display: block;
+	position: relative;
+}
+
+.arg_list {
+	height: 170px;
+	overflow-y: scroll;
+}
+
+.arg_item {
+	padding: 8px 0px 0px 8px;
+}
+
+.arg_label {
+	padding-left: 4px;
+}
+
+#tab-pane1, #tab-pane2, #tab-pane3, #tab-pane4, #tab-pane5 {
+	padding-top: 0px;
+}
+
+.tab5header {
+	width: 100%;
+	height: 54px;
+	position: absolute;
+	top: 0;
+	left: 0;
+	display: flex;
+	flex-flow: row nowrap;
+	justify-content: space-between;
+	align-items: center;
+	padding: 0px 10px;
+}
+
+.tab5Left {
+	display: flex;
+	flex-flow: row wrap;
+	justify-content: start;
+	flex: 1 1 auto;
+}
+
+.tab5Right {
+	flex: 0 0 auto;
+}
+
+.tab5Date, .tab5Ring, .tab5dataModel, .tab5Type {
+	display: flex;
+	flex-flow: row nowrap;
+	justify-content: start;
+	align-items: center;
+	margin-right: 10px;
+	height: 27px;
+}
+
+input.tab5checkbox {
+	margin: 0px 2px;
+}
+
+button[data-id="static-datamodel"] {
+	height: 27px;
+	line-height: 27px;
+	padding: 0px 12px;
+	text-align: center;
+}
+
+.date_input, .num_input {
+	height: 24px;
+}
+
+.tab5dataModel>.bootstrap-select:not ([class*="col-"] ):not ([class*="form-control"]
+	):not (.input-group-btn ){
+	width: 130px;
+	padding-right: 10px;
+	padding-left: 5px;
+}
+
+.query_btn {
+	width: 64px;
+}
+
+label {
+	margin-bottom: 0px;
+}

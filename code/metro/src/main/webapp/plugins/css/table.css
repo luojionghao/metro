@@ -1,0 +1,86 @@
+/** table */
+
+.dataTables_scrollBody::-webkit-scrollbar{
+    display:none;
+}
+
+.box{
+    height:100%;
+    border:1px solid #f4f4f4;
+    border-top:3px solid #d2d6de;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display:flex;
+    -webkit-box-orient:vertical;
+    -webkit-box-direction:normal;
+    -ms-flex-direction:column;
+    flex-direction:column;
+    overflow:hidden;
+}
+
+.box-header{
+	-webkit-box-flex:0;
+    -ms-flex-positive:0;
+	flex-grow:0;
+}
+
+.box-body{
+    padding:0px;
+    -webkit-box-flex:1;
+    -ms-flex-positive:1;
+    flex-grow:1;
+    overflow:hidden;
+    position:relative;
+}
+
+.box-body .row{
+	height:100%;
+	position:absolute;
+	width:100%;
+}
+
+.box-body .row,.box-body .row .col-sm-12,
+.dataTables_wrapper,.dataTables_scroll{
+	height:100%;
+}
+
+.dataTables_scroll{
+	display: -webkit-box;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+	display:flex;
+	-webkit-box-orient:vertical;
+    -webkit-box-direction:normal;
+        -ms-flex-direction:column;
+	flex-direction:column;
+}
+
+.dataTables_scrollBody{
+	-webkit-box-flex:1;
+    -ms-flex-positive:1;
+	flex-grow:1;
+}
+
+.dataTables_scroll .dataTables_scrollHead{
+	overflow:visible !important;
+	-webkit-box-flex:0;
+    -ms-flex-positive:0;
+	flex-grow:0;
+}
+
+.table.dataTable{
+	margin-top:0px !important;
+}
+
+
+.box-footer{
+    width:100%;
+    -webkit-box-flex:0;
+    -ms-flex-positive:0
+   	flex-grow:0;
+}
+
+.table > tbody > tr > td, .table > tbody > tr > th, .table > tfoot > tr > td, .table > tfoot > tr > th, .table > thead > tr > td, .table > thead > tr > th{
+    vertical-align:middle;
+}
