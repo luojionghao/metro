@@ -171,48 +171,63 @@
         </div>
         <div id="tab-pane5" class="tab-pane">
             <div class="tabWrap">
-                <div class="com_stat_header data_header wran_head clearfix">
-                    <div class="wran_head_left">
-                        <ol class="title_list clearfix">
-                            <li>
-                                <input type="radio" name="radiobox" class="check_box" value="t">
-                            </li>
-                            <li>统计日期：</li>
-                            <li>
-                                <div class="input-group date">
-                                    <div class="input-group-addon">
-                                        <i class="fa fa-calendar"></i>
-                                    </div>
-                                    <input type="text" value="${(beginDate)!'7/16/2016'}" class="pull-right date_input" id="beginTime5">
-                                </div>
-                            </li>
-                            <li class="to">至</li>
-                            <li>
-                                <div class="input-group date">
-                                    <div class="input-group-addon">
-                                        <i class="fa fa-calendar"></i>
-                                    </div>
-                                    <input type="text" value="${(endDate)!'7/16/2016'}" class="pull-right date_input" id="endTime5">
-                                </div>
-                            </li>
-                            <li class="radio_box">
-                                <input type="radio" name="radiobox" class="check_box" value="r" checked>
-                            </li>
-                            <li>统计环号：</li>
-                            <li><input style="width:60px;" type="number"
-                            <#if b_curr_ring?? && b_curr_ring gte 0>
-                                       value="${(b_curr_ring)!0}"
-                            <#else>
-                                       value="0"
-                            </#if>
-                                       id="beginRing5"></li>
-                            <li><em class="to">至</em></li>
-                            <li><input type="number" style="width:60px;" value="${(e_curr_ring)!0}" id="endRing5"></li>
-                        </ol>
+                <div class="tab5header data-header wran_head">
+                    <div class="tab5Left">
+                        <div class="tab5Date">
+                          <input type="radio" name="radiobox" class="tab5checkbox" value="t">
+                          统计日期：
+                          <div class="input-group date">
+                              <div class="input-group-addon">
+                                  <i class="fa fa-calendar"></i>
+                              </div>
+                              <input type="text" value="${(beginDate)!'7/16/2016'}" class="pull-right date_input" id="beginTime5">
+                          </div>
+                          至
+                          <div class="input-group date">
+                              <div class="input-group-addon">
+                                  <i class="fa fa-calendar"></i>
+                              </div>
+                              <input type="text" value="${(endDate)!'7/16/2016'}" class="pull-right date_input" id="endTime5">
+                          </div>
+                        </div>
+                        <div class="tab5Ring">
+                          <input type="radio" name="radiobox" class="tab5checkbox" value="r" checked>
+                          统计环号：
+                          <input class="num_input" style="width:60px;" type="number"
+                          <#if b_curr_ring?? && b_curr_ring gte 0>
+                                     value="${(b_curr_ring)!0}"
+                          <#else>
+                                     value="0"
+                          </#if>
+                                     id="beginRing5">
+                          <em class="to">至</em>
+                          <input class="num_input" type="number" style="width:60px;" value="${(e_curr_ring)!0}" id="endRing5">
+                        </div>
+                        <div class="tab5dataModel">
+                          数据模式：
+                          <select class="selectpicker" id="static-datamodel">
+                              <option value="100">默认采样值</option>
+                              <option value="1">最大值</option>
+                              <option value="2">最小值</option>
+                              <option value="3">平均值</option>
+                          </select>
+                        </div>
+                        <div class="tab5Type">
+                          <label for="dataType1">
+                            <input id="dataType1" type="checkbox" class="tab5typeCheck tab5checkbox" disabled>
+                            推进模式
+                          </label>
+                          <label for="dataType2">
+                            <input id="dataType2" type="checkbox" class="tab5typeCheck tab5checkbox" disabled>
+                            拼装模式
+                          </label>
+                          <label for="dataType3">
+                            <input id="dataType3" type="checkbox" class="tab5typeCheck tab5checkbox" disabled>
+                            停机模式
+                          </label>
+                        </div>
                     </div>
-                    <div class="wran_head_right">
-                        <button class="data_query_btn query_btn">查询</button>
-                    </div>
+                    <button class="tab5Right data_query_btn query_btn">查询</button>
                 </div>
                 <div class="dataChartWrap">
                     <div id="data_main" class="chart" style="width: 100%; height:100%;"></div>
@@ -722,15 +737,16 @@
                     option.yAxis = [
                         {type:'value',name:'bar',position:'left'},
                         {type:'value',name:'kN',position:'right'},
-                        {type:'value',name:'bar'},
+                        {type:'value',name:'bar'}
                     ];
                     break;
                 case 3:
-                    left_axis = 1; right_axis = 2;
+                    left_axis = 2; right_axis = 2;
                     option.yAxis = [
                         {type:'value',name:'bar',position:'left'},
+                        {type:'value',name:'mm',position:'left'},
                         {type:'value',name:'mm',position:'right'},
-                        {type:'value',name:'垂直趋势'},
+                        {type:'value',name:'垂直趋势',position:'right'}
                     ]
                     break;
                 case 4:
@@ -740,11 +756,12 @@
                     ]
                     break;
                 case 5:
-                    left_axis = 1; right_axis = 2;
+                    left_axis = 2; right_axis = 2;
                     option.yAxis = [
                         {type:'value',name:'bar',position:'left'},
+                        {type:'value',name:'mm',position:'left'},
                         {type:'value',name:'mm',position:'right'},
-                        {type:'value',name:'水平趋势'},
+                        {type:'value',name:'水平趋势',position:'right'}
                     ]
                     break;
                 case 6:
@@ -760,9 +777,9 @@
                     ]
                     break;
                 case 8:
+                    right_axis = 0;
                     option.yAxis = [
                         {type:'value',name:'mm',position:'left'},
-                        {type:'value',name:'mm',position:'right'},
                     ]
                     break;
                 default:
@@ -783,6 +800,8 @@
             }
             option.grid.left = 40*(left_axis-1);
             option.grid.right = 40*(right_axis-1);
+            option.dataZoom.startValue = null;
+            option.dataZoom.endValue = null;
             for(i=0;i<left_axis;i++){
                 option.yAxis[i].offset = 40*i;
             }
@@ -800,7 +819,10 @@
                 data:[]
             },
             tooltip: {},
-            dataZoom:{type:'inside'},
+            dataZoom:{
+              type:'inside',
+              filterMode:'empty'
+            },
             grid: {
                 left: '3%',
                 right: '3%',
@@ -834,6 +856,123 @@
             series: []
         };
         myChart.setOption(option);
+        var scaleStep = 0; // 放大步数
+        var scaleLock = false; // 状态锁
+        var currentMode = 0;  // 当前模式
+
+        myChart.on('dataZoom',function(e){
+          if(!scaleLock && getDataModel() == 100){
+            scaleStep += 1;
+            var oldStep = scaleStep;
+            setTimeout(function(){
+              console.log("old:"+oldStep+" new:"+scaleStep);
+              if(!scaleLock && (oldStep == scaleStep)){
+                // 500 ms 还没有改变
+                scaleLock = true; // 上锁
+                // 获取区间范围
+                var startValueIndex = myChart.getOption().dataZoom[0].startValue;
+                var endValueIndex = myChart.getOption().dataZoom[0].endValue;
+                var req_startValue = option.xAxis.data[startValueIndex];
+                var req_endValue = option.xAxis.data[endValueIndex];
+                beginTime = transformDate(req_startValue);
+                endTime = transformDate(req_endValue);
+                console.log(req_startValue);
+                console.log(req_endValue);
+
+                ax_request.get('/find/static/tab5',{
+                    params:{
+                        intervalId:$("#intervalId").val(),
+                        leftOrRight:$("#leftOrRight").val(),
+                        beginTime:beginTime,
+                        endTime:endTime,
+                        beginRing:$("#beginRing5").val(),
+                        endRing:$("#endRing5").val(),
+                        model:currentMode,
+                        type:'t',
+                        ks:''+$("#pnames").val(),
+                        kns:''+$("#knames").val(),
+                        indxs:''+$("#yAxiesList").val(),
+                        datamodel: getDataModel(),
+                        datatype: getDataType()
+                    }
+                }).then(function(result){
+                  var result_xAxis=result.data.keys?result.data.keys:[];
+                  var result_series=result.data.values?result.data.values:[];
+                  Array.prototype.splice.apply(option.xAxis.data,[startValueIndex,endValueIndex-startValueIndex].concat(result_xAxis));
+                  option.series = option.series.map(function(item,index){
+                    Array.prototype.splice.apply(item.data,[startValueIndex,endValueIndex-startValueIndex].concat(result_series[index].data));
+                    return item;
+                  });
+                  option.dataZoom.startValue = result_xAxis[0];
+                  option.dataZoom.endValue = result_xAxis[result_xAxis.length-1];
+                  myChart.setOption(option);
+                  // 成功处理
+                  scaleLock = false;
+                  scaleStep = 0;
+                }).catch(function(err){
+                  // 失败处理
+                  console.log(err);
+                });
+              }
+            },1800);
+          }
+        });
+
+        // 数据转日期格式化
+        function transformDate(dateStr){
+          group = dateStr.split(' ');
+          var d_group = group[0].split('-');
+          var t_group = group[1].split(':');
+          var t_second = t_group.length > 2 ? t_group[2] : "00";
+          return d_group[0]+"年"+d_group[1]+"月"+d_group[2]+"日 "+t_group[0]+"时"+t_group[1]+"分"+t_second+"秒";
+        }
+
+        // 数据转日期格式化
+        function transformDate1(dateStr){
+            return dateStr+" 00时00分00秒";
+        }
+
+        // 数据转日期格式化
+        function transformDate2(dateStr){
+            var nowDate = new Date();
+           // var nowStr = nowDate.getFullYear()+"年"+(nowDate.getMonth()+1)+"月"+nowDate.getDate()+"日";
+            var nowStr = nowDate.Format("yyyy年MM月dd日")
+            console.log(dateStr);
+            console.log(nowStr);
+            if(dateStr == nowStr){
+                return nowDate.getFullYear()+"年"+(nowDate.getMonth()+1)+"月"
+                        +nowDate.getDate()+"日 "+nowDate.getHours()+"时"+nowDate.getMinutes()+"分"+nowDate.getSeconds()+"秒";
+            }
+            return dateStr+" 00时00分00秒";
+        }
+
+        Date.prototype.Format = function (fmt) { //author: meizz
+            var o = {
+                "M+": this.getMonth() + 1, //月份
+                "d+": this.getDate(), //日
+                "h+": this.getHours(), //小时
+                "m+": this.getMinutes(), //分
+                "s+": this.getSeconds(), //秒
+                "q+": Math.floor((this.getMonth() + 3) / 3), //季度
+                "S": this.getMilliseconds() //毫秒
+            };
+            if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+            for (var k in o)
+                if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+            return fmt;
+        }
+
+        // array 去重
+        function arrayUnique(array) {
+            var a = array.concat();
+            for(var i=0; i<a.length; ++i) {
+                for(var j=i+1; j<a.length; ++j) {
+                    if(a[i] === a[j])
+                        a.splice(j--, 1);
+                }
+            }
+            return a;
+        }
 
         var left_checked_arg_list= []; // 左边参数选择结果
         var right_checked_arg_list= []; // 右边参数选择结果
@@ -992,9 +1131,9 @@
             /**
              * 参数:
              * 千斤顶油压差上下 C0009-C0013 bar 左 index 0
-             * 千斤顶行程差上下 C0001-C0005 mm 右 index 1
-             * 盾尾垂直偏差 J0025 mm 右 index 1
-             * 垂直趋势 J0027  右 index 2
+             * 千斤顶行程差上下 C0001-C0005 mm 左 index 1
+             * 盾尾垂直偏差 J0025 mm 右 index 2
+             * 垂直趋势 J0027  右 index 3
              */
             tab5(3);
         });
@@ -1012,9 +1151,9 @@
             /**
              * 参数
              * 千斤顶油压差（左右） C0015-C0011 bar 左 index 0
-             * 千斤顶行程差（左右） C0007-C0003 mm 右 index 1
-             * 盾尾水平偏差 J0024 mm 右 index 1
-             * 水平趋势 J0026 右 index 2
+             * 千斤顶行程差（左右） C0007-C0003 mm 左 index 1
+             * 盾尾水平偏差 J0024 mm 右 index 2
+             * 水平趋势 J0026 右 index 3
              */
             tab5(5);
         });
@@ -1037,6 +1176,7 @@
             tab5(7);
         });
 
+        // 模式八
         $('#md8').on('click',function(){
             /**
              * 参数
@@ -1048,22 +1188,58 @@
             tab5(8);
         });
 
+        function getDataModel(){
+          var title = $('button[data-id="static-datamodel"]').attr("title");
+          switch(title){
+            case "最大值": return 1;
+            case "最小值": return 2;
+            case "平均值": return 3;
+            default : return 100;
+          }
+        }
+
+        $('.tab5dataModel>.btn-group').on('hidden.bs.dropdown',function(){
+          var title = $('button[data-id="static-datamodel"]').attr("title");
+          if(title == '默认采样值'){
+            // 清空所有复选按钮，复选按钮disable
+            $('.tab5typeCheck').prop('checked',false);
+            $('.tab5typeCheck').prop('disabled',true);
+          }else{
+            // 复选按钮状态设置为enable
+            $('.tab5typeCheck').removeAttr('disabled');
+              $('#dataType1').prop('checked',true);
+          }
+        });
+
+        function getDataType(){
+          var dataType1 = $('#dataType1').is(':checked') ? 3 : 0;
+          var dataType2 = $('#dataType2').is(':checked') ? 4 : 0;
+          var dataType3 = $('#dataType3').is(':checked') ? 5 : 0;
+          return dataType1 + dataType2 + dataType3;
+        }
+
         function tab5(model){
+            currentMode = model;
             var v=$('input[name="radiobox"]:checked').val();
+
+            beginTime = transformDate1($("#beginTime5").val());
+            endTime = transformDate2($("#endTime5").val());
             if(v=='t'||v=='r'){
                 ax_request.get('/find/static/tab5',{
                     params:{
                         intervalId:$("#intervalId").val(),
                         leftOrRight:$("#leftOrRight").val(),
-                        beginTime:$("#beginTime5").val(),
-                        endTime:$("#endTime5").val(),
+                        beginTime:beginTime,
+                        endTime:endTime,
                         beginRing:$("#beginRing5").val(),
                         endRing:$("#endRing5").val(),
                         model:model,
                         type:v,
                         ks:''+$("#pnames").val(),
                         kns:''+$("#knames").val(),
-                        indxs:''+$("#yAxiesList").val()
+                        indxs:''+$("#yAxiesList").val(),
+                        datamodel: getDataModel(),
+                        datatype: getDataType()
                     }
                 }).then(function(result){
                     if(!result.data.keys||!result.data.values){

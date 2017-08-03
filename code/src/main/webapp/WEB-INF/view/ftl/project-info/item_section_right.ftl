@@ -1322,7 +1322,9 @@
 
     // tab 管理
     $('a[data-toggle="tab"]').on('shown.bs.tab',function(e){
-        if(e.target.innerText === '沉降点管理'){
+        console.log("tab");
+        console.log($(e.target).text());
+        if($(e.target).text() === '沉降点管理'){
             // 防止重复创建
             if ($("#pagination1").pagination()){
                 updateTableHeight(1);
@@ -1389,7 +1391,7 @@
                     totalName:'page.totalRow'
                 }
             });
-        }else if(e.target.innerText === '沉降点监测数据管理'){
+        }else if($(e.target).text() === '沉降点监测数据管理'){
             // 防止重复创建
             if ($("#pagination2").pagination()){
                 updateTableHeight(2);
@@ -1440,7 +1442,7 @@
                     totalName:'page.totalRow'
                 }
             });
-        }else if (e.target.innerText === '风险位置管理'){
+        }else if ($(e.target).text() === '风险位置管理'){
             showTable('dangerous',[
                         {"data":"positionNo"}, // 位置
                         {"data":"leftOrRight"}, // 左右线
@@ -1496,7 +1498,7 @@
                         }
                     ]
                     ,20,"${request.contextPath}","/project-info/interval/riskinfo/find","${intervalId!''}");
-        }else if(e.target.innerText === '盾尾间隙数据管理'){
+        }else if($(e.target).text() === '盾尾间隙数据管理'){
             showTable('shield_tail',[
                         {"data":"ringNum"}, // 环号
                         {"data":"leftOrRight"}, // 左右线
@@ -1519,7 +1521,7 @@
                     },"targets":1
                     }]
                     ,20,"${request.contextPath}","/project-info/interval/stinfo/find","${intervalId!''}");
-        }else if(e.target.innerText === '管片姿态数据管理'){
+        }else if($(e.target).text() === '管片姿态数据管理'){
             showTable('shield_profile',[
                         {"data":"ringNum"}, // 环号
                         {"data":"leftOrRight"}, // 左右线
@@ -1621,15 +1623,9 @@
     console.log("desc: "+desc);
     if(desc == "tab2"){
         console.log("desc: "+true);
-        $("#tab2").tab('show');
-    }
-    if(desc == "tab7"){
-        console.log("desc: "+true);
-        $("#tab7").tab('show');
-    }
-    if(desc == "tab8"){
-        console.log("desc: "+true);
-        $("#tab8").tab('show');
+        $("#tab2 ").tab('show');
+
+
     }
 
 </script>

@@ -28,7 +28,6 @@ public class MetroLineIntervalRp implements java.io.Serializable{
 	private Date createTime;//创建时间
 
 	public MetroLineIntervalRp() {
-		// TODO Auto-generated constructor stub
 	}
 
 	public Long getId() {

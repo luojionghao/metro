@@ -2,7 +2,6 @@ package cn.zdmake.metro.service;
 
 import cn.zdmake.metro.base.page.PageResultSet;
 import cn.zdmake.metro.model.MetroLineIntervalSa;
-import cn.zdmake.metro.model.MetroLineIntervalSt;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;

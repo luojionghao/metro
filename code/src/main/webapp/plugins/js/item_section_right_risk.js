@@ -14,6 +14,7 @@ function riskFileUpload(contextPath,intervalId){
 }
 
 function risk_file_submit(elm){
+    console.log(elm);
     var api = $(elm).data("api");
     var args = $(elm).data("args");
     var formData = new FormData();

@@ -14,12 +14,15 @@
 	        	<li>
 	        		<span>角色名称：</span><span>${(user.role.roleName)!''}</span>
 	        	</li>
+	         <#if city.lineList ?? && city.lineList?size != 0>
+                <li><span>数据权限控制：<span></li>
+			 </#if>
 	        </ul>
-			<div class="pop_data_block">
+			<div class="pop_data_block" style="overflow-y: scroll;overflow-x: scroll;">
 				<div class="sidebar">
 					<ul class="sidebar-menu line_menu">
 					  <#if city.lineList ?? && city.lineList?size != 0>
-					    <li class="line_title"><em>数据权限控制：</em></li>
+					    <#--<li class="line_title"><em>数据权限控制：</em></li>-->
 					    <#list city.lineList as line>
 					       <#if line_index == 0>
 					           <li class="active treeview line_section">

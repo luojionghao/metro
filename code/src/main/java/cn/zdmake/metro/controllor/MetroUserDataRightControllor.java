@@ -1,13 +1,11 @@
 package cn.zdmake.metro.controllor;
 
-
 import java.util.ArrayList;
 import java.util.List;
 
 import cn.zdmake.metro.base.controller.BaseController;
 import cn.zdmake.metro.base.model.CommonResponse;
 import cn.zdmake.metro.base.page.PageResultSet;
-import cn.zdmake.metro.base.utils.GsonUtils;
 import cn.zdmake.metro.base.utils.StringUtil;
 import cn.zdmake.metro.model.MetroCity;
 import cn.zdmake.metro.model.MetroUser;
@@ -25,112 +23,119 @@ import org.springframework.web.servlet.ModelAndView;
 
 import cn.zdmake.metro.base.aop.SysControllorLog;
 import cn.zdmake.metro.base.mv.JModelAndView;
-import cn.zdmake.metro.service.IMetroRoleService;
+//import cn.zdmake.metro.service.IMetroRoleService;
 
 /**
  * 数据权限管理
+ * 
  * @author hank
  *
- * 2016年8月22日
+ *         2016年8月22日
  */
 @Controller
 @RequestMapping("/data/right")
 public class MetroUserDataRightControllor extends BaseController {
 	private static Logger logger = Logger.getLogger(MetroUserDataRightControllor.class);
 
-	
 	@Autowired
 	private IMetroDataRightService dataRightService;
-	
+
 	@Autowired
 	private IMetroUserService userService;
-	
-	@Autowired
-	private IMetroRoleService roleService;
-	
+
+//	@Autowired
+//	private IMetroRoleService roleService;
+
 	@Autowired
 	private IMetroCityService cityService;
-	
+
 	/**
 	 * 用户数据权限管理主页
+	 * 
 	 * @return
 	 */
 	@RequestMapping("/index")
-	public String list(){
-		//查询数据权限树
-		/*SessionUser sessionUser = getCurrentUser();
-		request.setAttribute("userId", sessionUser.getId());*/
+	public String list() {
+		// 查询数据权限树
+		/*
+		 * SessionUser sessionUser = getCurrentUser(); request.setAttribute("userId",
+		 * sessionUser.getId());
+		 */
 		return "/sysm/smf_data";
 	}
-	
+
 	/**
 	 * 查找用户
+	 * 
 	 * @return
 	 */
 	@RequestMapping("/find/users")
 	@ResponseBody
-	public String findUsersAll(){
+	public PageResultSet<MetroUser> findUsersAll() {
 		String pageNum = request.getParameter("pageNum");
 		String pageSize = request.getParameter("pageSize");
-		PageResultSet<MetroUser> userResult= userService.findAllUser(StringUtil.nullToInt(pageNum), StringUtil.nullToInt(pageSize));
-		return GsonUtils.toJson(userResult);
+		PageResultSet<MetroUser> userResult = userService.findAllUser(StringUtil.nullToInt(pageNum),
+				StringUtil.nullToInt(pageSize));
+		return userResult;
 	}
-	
-	
+
 	/**
 	 * 获取用户数据权限
+	 * 
 	 * @return
 	 */
-	@SysControllorLog(menu="数据权限管理",opreate="编辑数据权限")
+	@SysControllorLog(menu = "数据权限管理", opreate = "编辑数据权限")
 	@RequestMapping("/get/user/data-right")
-	public ModelAndView findUserDataRightByUserId(){
+	public ModelAndView findUserDataRightByUserId() {
 		JModelAndView mv = new JModelAndView("/sysm/smf_data_edit", request, response);
 		String userId = request.getParameter("userId");
-		//用户的所有数据权限列表
+		// 用户的所有数据权限列表
 		List<MetroUserDataRel> udrlist = dataRightService.findUserDataRightByUserId(userId);
 		List<String> authList = new ArrayList<String>();
-		for(MetroUserDataRel rel : udrlist){
-			authList.add(rel.getCityId()+";"+rel.getLineId()+";"+rel.getIntervalId()+";"+rel.getLeftOrRight());
+		for (MetroUserDataRel rel : udrlist) {
+			authList.add(
+					rel.getCityId() + ";" + rel.getLineId() + ";" + rel.getIntervalId() + ";" + rel.getLeftOrRight());
 		}
-		//用户信息
+		// 用户信息
 		MetroUser user = userService.findObjById(Long.parseLong(userId));
-		//城市地铁线路信息
-		Long cityId = 1l; //默认广州
+		// 城市地铁线路信息
+		Long cityId = 1l; // 默认广州
 		MetroCity city = cityService.findObjById(cityId);
-		
-		mv.addObject("auths",authList);
-		mv.addObject("city",city);
-		mv.addObject("user",user);
+
+		mv.addObject("auths", authList);
+		mv.addObject("city", city);
+		mv.addObject("user", user);
 		return mv;
 	}
-	
+
 	/**
 	 * 保存用户数据权限信息
+	 * 
 	 * @param userId
 	 * @param dataRight
 	 * @return
 	 */
-	@RequestMapping(value="/save/user/data-right",method=RequestMethod.POST)
+	@RequestMapping(value = "/save/user/data-right", method = RequestMethod.POST)
 	@ResponseBody
-	public String saveEditUserDataRight(){		
-		CommonResponse r = new CommonResponse();
-		try{
+	public CommonResponse saveEditUserDataRight() {
+		CommonResponse commonResponse = new CommonResponse();
+		try {
 			String userId = request.getParameter("userId");
-			String dataRight = request.getParameter("dataRight");//"1;1;3;l,1;1;3;r" {城市;线路;区间;左右标记}
-			boolean result = dataRightService.saveDataRightInfo(userId,dataRight);
-			if(result){
-				r.setCode(1);
-				r.setResult("保存用户数据权限信息成功");
-			}else{
-				r.setCode(0);
-				r.setResult("保存用户数据权限信息出错");
+			String dataRight = request.getParameter("dataRight");// "1;1;3;l,1;1;3;r" {城市;线路;区间;左右标记}
+			boolean result = dataRightService.saveDataRightInfo(userId, dataRight);
+			if (result) {
+				commonResponse.setCode(1);
+				commonResponse.setResult("保存用户数据权限信息成功");
+			} else {
+				commonResponse.setCode(0);
+				commonResponse.setResult("保存用户数据权限信息出错");
 			}
-		}catch(Exception e){
+		} catch (Exception e) {
 			logger.error("保存用户数据权限信息异常", e);
-			r.setCode(0);
-			r.setResult("保存用户数据权限信息异常");
+			commonResponse.setCode(0);
+			commonResponse.setResult("保存用户数据权限信息异常");
 		}
-		return GsonUtils.toJson(r);
+		return commonResponse;
 	}
-	
+
 }

@@ -17,6 +17,7 @@ import java.util.regex.Pattern;
 
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
+import javax.servlet.WriteListener;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -106,7 +107,7 @@ public class HttpInclude {
 		request.getRequestDispatcher(url_path).include(request, customResponse);
 		customResponse.flushBuffer();
 		if (customResponse.useOutputStream) {
-			writer.write(outputStream.toString(response.getCharacterEncoding())); // TODO:
+			writer.write(outputStream.toString(response.getCharacterEncoding()));
 			// response.getCharacterEncoding()有可能为null
 		}
 		writer.flush();
@@ -177,7 +178,6 @@ public class HttpInclude {
 			HttpServletResponseWrapper {
 		public boolean useWriter = false;
 		public boolean useOutputStream = false;
-		//
 		private PrintWriter printWriter;
 		private ServletOutputStream servletOutputStream;
 
@@ -201,6 +201,16 @@ public class HttpInclude {
 				public void write(byte[] b, int off, int len)
 						throws IOException {
 					customOutputStream.write(b, off, len);
+				}
+
+				@Override
+				public boolean isReady() {
+					return false;
+				}
+
+				@Override
+				public void setWriteListener(WriteListener arg0) {
+					
 				}
 			};
 		}

@@ -34,6 +34,7 @@ function showTable(tableName,columns,columnDefs,pageSize,_contextPath,_showApi,_
     // 防止重复加载表格
     if ($(pagination_plug_name).pagination()){
         updateTableHeight(tableName);
+        console.log(table);
         table.order([0,'desc']).draw();
         return;
     };
@@ -91,11 +92,12 @@ function getFileName(url) {
 
 // 获取表格行数据
 function getRowData(elm){
+    var table_dangerous = $('#roleTable_dangerous').DataTable();
     var parentTR = $(elm).parents('tr');
-    var data = table.row(parentTR).data();
+    var data = table_dangerous.row(parentTR).data();
     delete data.createTime;
     delete data.updateTime;
-    return table.row(parentTR).data();
+    return table_dangerous.row(parentTR).data();
 }
 
 // ajax request
@@ -110,7 +112,7 @@ function request(url,data,modal){
             if(result.code == "1"){
                 alert('保存成功！');
                 $('#pagination_dangerous').pagination('remote');
-                $("#dangerous_new_form").find("input[type=text], textarea").val("");;
+                $("#dangerous_new_form").find("input[type=text], textarea").val("");
             }else{
                 alert('网络不给力，请稍后再试!');
             }

@@ -1,1 +1,6 @@
 /target/
+.settings/*
+.gitignore
+.classpath
+.project
+/src/main/resources/properties/config.properties

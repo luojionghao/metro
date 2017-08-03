@@ -30,5 +30,6 @@ public class LoginService implements ILoginService{
 		params.put("status", status);
 		return loginDao.updateUserOnlineStatus(params)>0?true:false;
 	}
+	
 
 }

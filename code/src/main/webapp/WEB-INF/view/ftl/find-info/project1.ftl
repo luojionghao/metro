@@ -219,4 +219,4 @@
     <script src="<@s.url'/plugins/js/snap.svg.zpd.js'/>"></script>
     <script src="<@s.url'/plugins/js/snap1.js'/>"></script>
     <script src="<@s.url'/plugins/bower/axios/dist/axios.min.js'/>"></script>
-</html>  
+</html>

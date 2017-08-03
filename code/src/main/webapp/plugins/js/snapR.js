@@ -104,8 +104,8 @@ function getTwoPoints(svg, realPoint, hg) {
     var x1, y1, x2, y2;
     svg.click(function(evt) {
         if (isCheckRange == true) {
-            realPoint.x = evt.x;
-            realPoint.y = evt.y;
+            realPoint.x = evt.x || evt.clientX;
+            realPoint.y = evt.y || evt.clientY;
             var matriPoint = realPoint.matrixTransform(gSVG.firstElementChild.getScreenCTM().inverse());
 
             var x = matriPoint.x;
@@ -201,8 +201,8 @@ function getPoint(svg, realPoint, hg) {
     var x1, y1;
     svg.click(function(evt) {
         if (isCheckCoordinate == true) {
-            realPoint.x = evt.x;
-            realPoint.y = evt.y;
+            realPoint.x = evt.x || evt.clientX;
+            realPoint.y = evt.y || evt.clientY;
             var matriPoint = realPoint.matrixTransform(gSVG.firstElementChild.getScreenCTM().inverse());
 
             var x = matriPoint.x;
@@ -264,7 +264,7 @@ function getPoint(svg, realPoint, hg) {
             textG1.setAttributeNS(null,"font-size","20px");
             textG1.setAttributeNS(null,"font-weight","bold");
             textG1.setAttributeNS(null,"visibility","visible");
-            var textStringG1 = document.createTextNode( "    东西坐标:" + Math.abs((x1 / 4) + RelativeX).toFixed(2) + "m");
+            var textStringG1 = document.createTextNode( "    东西坐标:" + Math.abs((y1 / 4) - RelativeY).toFixed(2) + "m");
             textG1.appendChild(textStringG1);
             svg.append(textG1);
 
@@ -276,7 +276,7 @@ function getPoint(svg, realPoint, hg) {
             textG2.setAttributeNS(null,"strokeWidth",0.1);
             textG2.setAttributeNS(null,"font-size","20px");
             textG2.setAttributeNS(null,"visibility","visible");
-            var textStringG2 = document.createTextNode( "    南北坐标:" + Math.abs((y1 / 4) - RelativeY).toFixed(2) + "m");
+            var textStringG2 = document.createTextNode( "    南北坐标:" + Math.abs((x1 / 4) + RelativeX).toFixed(2) + "m");
             textG2.appendChild(textStringG2);
             svg.append(textG2);
 
@@ -594,9 +594,9 @@ function moveToCenter(svg, points) {
 
     var svgBox = svg.getBBox();
     console.log(svgBox);
-    var divWidth = svg.node.clientWidth;
+    var divWidth =$("#svg").outerWidth(false);
     console.log(divWidth);
-    var divHeight = svg.node.clientHeight;
+    var divHeight = $("#svg").outerHeight(false);
     panZoom(svg.select("g"), -points[1] + divWidth / 2, -points[2] + divHeight / 2, 10, points[1], points[2]);
 
 }
@@ -636,7 +636,7 @@ function hidecoord(){
     var nv = document.getElementById("hidecoord");
     nv.innerHTML="显示线路";
     nv.onclick =function(){showcoord()};
-    var lineList = document.getElementsByName("coordinates");
+    var lineList = $("*[name='coordinates']");
     for(var i=0;i<lineList.length;i++){
         Snap(lineList[i]).attr({ visibility: "hidden" });
     }
@@ -646,7 +646,7 @@ function showcoord(){
     var nv = document.getElementById("hidecoord");
     nv.innerHTML="隐藏线路";
     nv.onclick = function(){hidecoord()};
-    var lineList = document.getElementsByName("coordinates");
+    var lineList = $("*[name='coordinates']");
     for(var i=0;i<lineList.length;i++){
         Snap(lineList[i]).attr({ visibility: "visible" });
     }

@@ -102,6 +102,8 @@
 
         var lLinedata;
         var rLinedata;
+        var lCoordinates;
+        var rCoordinates;
 
         function goNum(goNum) {
             moveToNum(goNum);
@@ -124,6 +126,41 @@
                     lLinedata= null;
                 }
             });
+
+            $.ajax({
+                type: "GET",
+                dataType: "json",
+                url: "${request.contextPath}/monitor/info/find/line/monitor/coordinates?line=" + lLinekey,
+                async: false,
+                success: function (json) {
+                    if (json.code == 1) {
+                        lCoordinates = json.result;
+                    } else {
+                        lCoordinates = null;
+                    }
+                },
+                error: function (data, status, e) {
+                    lCoordinates = null;
+                }
+            });
+
+            $.ajax({
+                type: "GET",
+                dataType: "json",
+                url: "${request.contextPath}/monitor/info/find/line/monitor/coordinates?line=" + rLinekey,
+                async: false,
+                success: function (json) {
+                    if (json.code == 1) {
+                        rCoordinates = json.result;
+                    } else {
+                        rCoordinates = null;
+                    }
+                },
+                error: function (data, status, e) {
+                    rCoordinates = null;
+                }
+            });
+
             $.ajax({
                 type:"GET",
                 dataType:"json",

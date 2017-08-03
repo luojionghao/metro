@@ -5,7 +5,6 @@ import java.util.List;
 import cn.zdmake.metro.base.controller.BaseController;
 import cn.zdmake.metro.base.model.CommonResponse;
 import cn.zdmake.metro.base.page.PageResultSet;
-import cn.zdmake.metro.base.utils.GsonUtils;
 import cn.zdmake.metro.base.utils.StringUtil;
 import cn.zdmake.metro.model.MetroPhoto;
 import cn.zdmake.metro.service.IMetroDictionaryService;
@@ -70,12 +69,12 @@ public class MetroDictionaryControllor extends BaseController {
 	@SysControllorLog(menu="字典管理",opreate="查询")
 	@RequestMapping("/find/dics")
 	@ResponseBody
-	public String findDictionaryAll(){
+	public PageResultSet<MetroDictionary> findDictionaryAll(){
 		String pageNum = request.getParameter("pageNum");
 		String pageSize = request.getParameter("pageSize");
 		PageResultSet<MetroDictionary> userResult= dicService.findMetroDictionaryInfo(
 				StringUtil.nullToInt(pageNum), StringUtil.nullToInt(pageSize));
-		return GsonUtils.toJson(userResult);
+		return userResult;
 	}
 	
 	
@@ -86,12 +85,12 @@ public class MetroDictionaryControllor extends BaseController {
 	@SysControllorLog(menu="字典管理",opreate="查询")
 	@RequestMapping("/find/photos")
 	@ResponseBody
-	public String findPhotosAll(){
+	public PageResultSet<MetroPhoto> findPhotosAll(){
 		String pageNum = request.getParameter("pageNum");
 		String pageSize = request.getParameter("pageSize");
 		PageResultSet<MetroPhoto> photoResult= photoService.findMetroPhotos(
 				StringUtil.nullToInt(pageNum), StringUtil.nullToInt(pageSize));
-		return GsonUtils.toJson(photoResult);
+		return photoResult;
 	}
 	
 	/**

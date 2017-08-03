@@ -19,8 +19,15 @@
 <body class="sidebar-mini skin-blue wysihtml5-supported">
 	<input type="hidden" id="deptId" name="deptId" value="${(deptId)}">
     <div class="box">
-        <div class="box-header">
-            <button class="add_btn">添加用户</button>
+        <div class="user-header">
+            <div class="input-group input-group-sm btn-head search-bar">
+              <input id="searchInput" class="form-control search-input" type="text"></input>
+              <div class="input-group-btn btn-group">
+                <button id="searchBtn" class="btn btn-info btn-flat search-btn" type="button">搜索</button>
+              </div>
+            </div>
+            <button id="showAll" class="btn btn-info btn-head btn-single btn-xs">显示全部</button>
+            <button id="add_btn" class="btn btn-info btn-head btn-single btn-xs">添加用户</button>
         </div>
         <div class="box-body">
         	<div class="row no-pad">
@@ -114,7 +121,7 @@ table.on('draw.dt',function(){
 		$("#nowUserId").val($(this).attr("userid"));
 		$(".del_cover").show();
 		$(".cancel_btn").on("click",function(){
-			$(".del_cover").hide();			
+			$(".del_cover").hide();
 		})
 		$(".sure_btn").on("click",function(){
 			$.ajax({
@@ -122,13 +129,13 @@ table.on('draw.dt',function(){
 				url:"<@s.url'/user/del/user'/>",
 				data:{
 					"userId":$("#nowUserId").val(),
-					"deptId":$("#deptId").val()					
+					"deptId":$("#deptId").val()
 				},
 				success:function(data){
 					$(".del_cover").hide();
 					window.location.reload();
 				}
-			});			
+			});
            // 执行删除逻辑
 		})
 	})
@@ -136,7 +143,7 @@ table.on('draw.dt',function(){
 	$(".modal-content button").on("click",function(){
 		$(".edit_cover").hide();
 	})
-	
+
 	//编辑按钮
 	$(".edit_btn").on("click",function(){
 		$("#nowUserId").val($(this).attr("userid"));
@@ -144,9 +151,9 @@ table.on('draw.dt',function(){
 		toEdit();
 		$("#nowUserId").val('');
 		$(".edit_cover").show();
-		
+
 	});
-	
+
 	//重置密码按钮
 	$(".reset_btn").on("click",function(){
 		$("#nowUserId").val($(this).attr("userid"));
@@ -154,22 +161,22 @@ table.on('draw.dt',function(){
 			type:'POST',
 			url:"<@s.url'/user/reset/user/pass'/>",
 			data:{
-				"userId":$("#nowUserId").val()				
+				"userId":$("#nowUserId").val()
 			},
-			success:function(data){				
+			success:function(data){
 				alert('密码已重置为：'+data.password);
 			}
-		});	
+		});
 	});
 })
 
 //新增按钮
-$(".add_btn").on("click",function(){
+$("#add_btn").on("click",function(){
 	operate = 0;
 	toEdit();
 	$("#nowUserId").val('');
 	$(".edit_cover").show();
-	
+
 });
 var pagination = zookePagination('#user_page',{
     pageSize:10,
@@ -193,6 +200,33 @@ var pagination = zookePagination('#user_page',{
     }
 });
 
+// 显示全部
+$('#showAll').on('click',function(){
+  window.location.reload();
+});
+
+// 搜索按钮
+$('#searchBtn').on('click',function(){
+  var searchText = $('#searchInput').val();
+  console.log(searchText);
+  $.ajax({
+    type:'GET',
+    url:"${request.contextPath!}"+"/user/find/name",
+    data:{
+      pageNum: 0,
+      pageSize: 10,
+      name: searchText
+    },
+    success:function(res){
+      table.clear();
+      table.rows.add(res.list);
+      table.draw();
+    }
+  });
+})
+
+
+
 function toEdit(){
 	$.ajax({
 		type:'POST',
@@ -210,9 +244,9 @@ function toEdit(){
 
 function saveUserInfo(){
 	$(".save_btn").attr("disabled","true");
-	var chk_value = []; 
-	$('.depts:checked').each(function(){ 
-		chk_value.push($(this).val()); 
+	var chk_value = [];
+	$('.depts:checked').each(function(){
+		chk_value.push($(this).val());
 	});
 	$.ajax({
 		type:'POST',
@@ -227,15 +261,15 @@ function saveUserInfo(){
 			"deptIds":chk_value.toString(),
 			"oldDeptIds":$("#oldDeptIds").val()
 		},
-		success:function(data){			
+		success:function(data){
 			if(data.code==1){
 				alert("该账号已经存在");
-				$(".save_btn").removeAttr("disabled");				
+				$(".save_btn").removeAttr("disabled");
 			}else{
 				cancel();
 				window.location.reload();
 			}
-			
+
 		}
 	});
 

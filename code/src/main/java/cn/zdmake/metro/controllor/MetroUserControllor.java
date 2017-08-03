@@ -5,7 +5,6 @@ import java.util.Random;
 
 import cn.zdmake.metro.base.controller.BaseController;
 import cn.zdmake.metro.base.security.MD5;
-import cn.zdmake.metro.base.utils.GsonUtils;
 import cn.zdmake.metro.base.utils.StringUtil;
 import cn.zdmake.metro.service.IMetroUserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,13 +66,13 @@ public class MetroUserControllor extends BaseController {
 	@SysControllorLog(menu="用户管理",opreate="部门用户查询")
 	@RequestMapping("/find/users")
 	@ResponseBody
-	public String findUserByDeptId(){
+	public PageResultSet<MetroUser> findUserByDeptId(){
 		String deptId = request.getParameter("deptId");
 		String pageNum = request.getParameter("pageNum");
 		String pageSize = request.getParameter("pageSize");
 		PageResultSet<MetroUser> userResult= userService.findMetroUserInfo(deptId, 
 				StringUtil.nullToInt(pageNum), StringUtil.nullToInt(pageSize));
-		return GsonUtils.toJson(userResult);
+		return userResult;
 	}
 	
 	/**

@@ -13,7 +13,6 @@ import java.util.Map;
 import cn.zdmake.metro.base.page.PageResultSet;
 import cn.zdmake.metro.base.service.BaseService;
 import cn.zdmake.metro.base.utils.CommonUtils;
-import cn.zdmake.metro.base.utils.GsonUtils;
 import cn.zdmake.metro.dao.IMetroLineIntervalMdDao;
 import cn.zdmake.metro.model.MetroLineIntervalMdRe;
 import cn.zdmake.metro.service.IMetroLineIntervalMdReService;
@@ -226,65 +225,6 @@ public class MetroLineIntervalMdReService extends BaseService<MetroLineIntervalM
         }
     }
 	
-	public static void main(String[] args) throws Exception {
-		InputStream instream = new FileInputStream("G:/沉降检测表--广州.xls");
-		//InputStream instream = new FileInputStream("G:/lakarra.xls");
-		jxl.Workbook readwb = Workbook.getWorkbook(instream);
-		Sheet s = readwb.getSheet(0);
-		System.out.println(s.getColumns());
-		System.out.println(s.getRows());
-		int column = s.getColumns();
-		   int row = s.getRows();
-		   Map<String,String> map = new HashMap<String,String>();
-		   for(int i=9; i<row; i++){
-			   //if(i>=10) break;
-			   String key = s.getCell(0, i).getContents();
-			   if(key.startsWith("说明")){
-				   break;
-			   }
-			   String value = "";
-			   for(int j=1; j<column; j++){
-				   Cell cell = s.getCell(j, i);
-				   value += "#" + cell.getContents();
-				  // System.out.println(cell.getContents());
-			   }
-			   
-			   map.put(key, value.substring(1));
-		   }
-		   map.remove("");
-		   System.out.println(GsonUtils.toJson(map));
-		   
-		   /*
-		    * {
-    "": "#####",
-    "说明：正值表示上升，负值表示下沉。       ": "#####",
-    "QJ1-4": "13.8923 #13.8901 #13.8898 #-0.3 #-2.5 #",
-    "QJ2-3": "14.9934 #14.9717 #14.9721 #0.4 #-21.3 #",
-    "QJ1-3": "13.8883 #13.8842 #13.8843 #0.1 #-4.0 #",
-    "QJ2-2": "15.3736 #15.3514 #15.3520 #0.6 #-21.6 #",
-    "工程名称": "广州市轨道交通X号线X期工程【施工X标】土建工程##合同编号###",
-    "施工单位": "X##监理单位#广州轨道交通建设监理有限公司##",
-    "QJ1-2": "13.8840 #13.8790 #13.8800 #1.0 #-4.0 #",
-    "QJ2-1": "15.7963 #15.7741 #15.7745 #0.4 #-21.8 #",
-    "QJ1-1": "13.7191 #13.7171 #13.7178 #0.7 #-1.3 #",
-    "   广州市轨道交通X号线X期工程【施工X标】土建工程": "#####",
-    "测量：                      计算：                  审核：          ": "#####",
-    "编 号": "初始高程 （m）#前次高程（m）#本次高程（m）#本次变化量   （mm)#累计变化量   （mm)#",
-    "监测时间": "10:30##监测日期#2014.12.30##",
-    "QJ1-9": "13.6709 #13.6734 #13.6743 #0.9 #3.4 #",
-    "QJ2-8": "14.5232 #14.5166#14.5165#-0.1 #-6.7 #",
-    "QJ1-8": "13.9315 #13.9327 #13.9327 #0.0 #1.2 #",
-    "QJ2-7": "14.4890 #14.4795#14.4798#0.3 #-9.2 #",
-    "QJ1-7": "13.9122 #13.9133 #13.9133 #0.0 #1.1 #",
-    "QJ2-6": "14.4577 #14.4462#14.4464#0.2 #-11.3 #",
-    "QJ1-6": "13.8825 #13.8827 #13.8827 #0.0 #0.2 #",
-    "QJ2-5": "14.4220 #14.4069 #14.4070 #0.1 #-15.0 #",
-    "QJ1-5": "13.8834 #13.8813 #13.8801 #-1.2 #-3.3 #",
-    "QJ2-4": "14.5849 #14.5668 #14.5672 #0.4 #-17.7 #",
-    "XX区间右线地表沉降监测": "#####"
-}
-		    */
-	}
 
 	/**
 	 * 沉降点监测数据记录删除

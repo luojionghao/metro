@@ -1,6 +1,6 @@
 package cn.zdmake.metro.service.impl;
 
-import jxl.common.Logger;
+//import jxl.common.Logger;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,7 +19,7 @@ import cn.zdmake.metro.service.IMetroLineIntervalMdService;
 @Service("lineIntervalMdService")
 public class MetroLineIntervalMdService extends BaseService<MetroLineIntervalMd> implements IMetroLineIntervalMdService{
 	
-	private static Logger logger = Logger.getLogger(MetroLineIntervalMdService.class);
+	// private static Logger logger = Logger.getLogger(MetroLineIntervalMdService.class);
 
 	@Autowired
 	IMetroLineIntervalMdDao lineIntervalMdDao;

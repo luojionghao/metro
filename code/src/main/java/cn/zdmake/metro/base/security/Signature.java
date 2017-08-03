@@ -25,7 +25,7 @@ public class Signature {
      */
     public static String getSign(Object o,String wx_pay_pass) throws IllegalAccessException {
         ArrayList<String> list = new ArrayList<String>();
-        Class cls = o.getClass();
+        Class<?> cls = o.getClass();
         Field[] fields = cls.getDeclaredFields();
         for (Field f : fields) {
             f.setAccessible(true);
@@ -78,8 +78,8 @@ public class Signature {
      */
 	public static String getSign(String json,String wx_pay_pass){
 		JSONObject params = new JSONObject(json);
-		Set keys = params.keySet();
-		Iterator iterator = keys.iterator();
+		Set<?> keys = params.keySet();
+		Iterator<?> iterator = keys.iterator();
 		ArrayList<String> list = new ArrayList<String>();
 		while(iterator.hasNext()){
 			Object obj = iterator.next();

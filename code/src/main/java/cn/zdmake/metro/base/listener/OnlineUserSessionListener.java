@@ -13,7 +13,6 @@ import javax.servlet.http.HttpSessionListener;
 public class OnlineUserSessionListener implements HttpSessionListener {
 
 	public OnlineUserSessionListener() {
-		// TODO Auto-generated constructor stub
 	}
 	
 	/**

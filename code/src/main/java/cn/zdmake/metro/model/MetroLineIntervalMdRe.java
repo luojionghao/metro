@@ -23,7 +23,6 @@ public class MetroLineIntervalMdRe implements java.io.Serializable{
 	private Date createTime;//创建时间
 	   
 	public MetroLineIntervalMdRe() {
-		// TODO Auto-generated constructor stub
 	}
 
 	/**

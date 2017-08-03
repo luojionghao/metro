@@ -35,22 +35,21 @@ public class CommonService implements ICommonService {
 
 	@Override
 	public CommonResponse fileUpload(HttpServletRequest request) {
-		CommonResponse r = new CommonResponse();
+		CommonResponse commonResponse = new CommonResponse();
 		try{
 			DiskFileItemFactory factory = new DiskFileItemFactory();
 	        factory.setSizeThreshold(1*1024*1024); //小于1M直接存内存，不需要临时文件
 	        ServletFileUpload upload = new ServletFileUpload(factory);
 	        upload.setSizeMax(10*1024*1024); //最大上传文件大小为10M
 	        List<FileItem> list = upload.parseRequest(request);
-	        //logger.info("list:"+GsonUtils.toJson(list));
 	        Iterator<FileItem> it = list.iterator();
 	        while(it.hasNext()){
 	        	FileItem fileItem = (FileItem) it.next();
 	        	if(!fileItem.isFormField()){ //文件表单项
 	        		if(fileItem.getSize() > 20*1024*1024){
-	        			r.setCode(Constants.CODE_FAIL);
-	        			r.setResult("上传失败，文件要小于20M");
-	        			return r;
+	        			commonResponse.setCode(Constants.CODE_FAIL);
+	        			commonResponse.setResult("上传失败，文件要小于20M");
+	        			return commonResponse;
 	        		}
 	        		//生成18位文件名前缀，文件名格式为："18位数字"+"_"+"真实上传文件名"
 	        		String fileName = fileItem.getName();
@@ -65,32 +64,32 @@ public class CommonService implements ICommonService {
 	        		boolean result = FileUtil.uploadFile(fileItem.getInputStream(), savePath, filename);
 	        		if(result){ //上传成功
 	        			String url = ConfigProperties.getValueByKey("FILE_VISIT_PATH")+"/"+filename;
-	        			r.setCode(Constants.CODE_SUCCESS);
-	        			r.setResult(url);
+	        			commonResponse.setCode(Constants.CODE_SUCCESS);
+	        			commonResponse.setResult(url);
 	        		}else{ //上传失败
 	        			logger.error("文件上传失败");
-	        			r.setCode(Constants.CODE_FAIL);
-	        			r.setResult("文件上传失败");
+	        			commonResponse.setCode(Constants.CODE_FAIL);
+	        			commonResponse.setResult("文件上传失败");
 	        		}
 	        	}
 	        }
 		}catch(Exception e){
 			logger.error("文件上传异常", e);
-			r.setCode(0);
-			r.setResult("文件上传异常");
+			commonResponse.setCode(0);
+			commonResponse.setResult("文件上传异常");
 		}
-	    return r;
+	    return commonResponse;
 	}
 
 
 	@Override
 	public CommonResponse fileUpload(MultipartFile file) {
-		CommonResponse r = new CommonResponse();
+		CommonResponse commonResponse = new CommonResponse();
 		try{
 			if(file.getSize() > 20*1024*1024){
-    			r.setCode(Constants.CODE_FAIL);
-    			r.setResult("上传失败，文件要小于10M");
-    			return r;
+    			commonResponse.setCode(Constants.CODE_FAIL);
+    			commonResponse.setResult("上传失败，文件要小于10M");
+    			return commonResponse;
     		}
 			//生成18位文件名前缀，文件名格式为："18位数字"+"_"+"真实上传文件名"
 			String fileName = file.getOriginalFilename();
@@ -104,18 +103,18 @@ public class CommonService implements ICommonService {
 			boolean result = FileUtil.uploadFile(file.getInputStream(), savePath, filename);
 			if(result){ //上传成功
 				String url = ConfigProperties.getValueByKey("FILE_VISIT_PATH")+"/"+filename;
-				r.setCode(Constants.CODE_SUCCESS);
-				r.setResult(url);
+				commonResponse.setCode(Constants.CODE_SUCCESS);
+				commonResponse.setResult(url);
 			}else{ //上传失败
 				logger.error("文件上传失败");
-				r.setCode(Constants.CODE_FAIL);
-				r.setResult("文件上传失败");
+				commonResponse.setCode(Constants.CODE_FAIL);
+				commonResponse.setResult("文件上传失败");
 			}
 		}catch(Exception e){
 			logger.error("文件上传异常", e);
-			r.setCode(Constants.CODE_FAIL);
-			r.setResult("文件上传异常");
+			commonResponse.setCode(Constants.CODE_FAIL);
+			commonResponse.setResult("文件上传异常");
 		}
-	    return r;
+	    return commonResponse;
 	}
 }

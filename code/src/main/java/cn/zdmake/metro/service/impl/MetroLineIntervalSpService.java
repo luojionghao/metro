@@ -22,8 +22,6 @@ import cn.zdmake.metro.model.MetroLineIntervalSp;
 import cn.zdmake.metro.service.IMetroLineIntervalSpService;
 import org.springframework.web.multipart.MultipartFile;
 
-import static jxl.biff.BaseCellFeatures.logger;
-
 /**
  * 地铁线路区间沉降点业务接口实现
  * @author hank

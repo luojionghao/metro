@@ -67,8 +67,9 @@ function shield_tail_alter_save(contextPath){
 // 盾尾间隙excel数据上传
 function shield_tail_file_upload(contextPath,intervalId){
     $("#risk_file_upload").data("successCallBack",function(data,status){
-        $('#pagination_shield_tail').pagination('remote');
         alert("上传成功");
+        $('#pagination_shield_tail').pagination('remote');
+
     });
     $("#risk_file_upload").data("failedCallBack",function(data, status, e){
         alert("上传失败");
@@ -111,6 +112,7 @@ function post_shield_tail_form_data(url,formId,modalId){
             // 提交成功
             if(result.code == "1"){
                 $("#pagination_shield_tail").pagination('remote');
+                $("#new_shield_tail").find("input[type=text], textarea").val("");
                 alert('保存成功！');
             }else{
                 alert('网络不给力，请稍后再试!');

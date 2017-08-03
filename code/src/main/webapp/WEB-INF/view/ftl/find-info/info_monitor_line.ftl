@@ -149,12 +149,12 @@
                             render:function(data,row){
                                 console.log("停机");
 								console.log(data);
-                                if (data === 0 || data===null){
-                                    return "停机";
-                                }else if(data === 3){
+                                if (data>2 && data<=3){
                                     return "推进";
+                                }else if(data>3 && data<=4){
+                                    return "拼装";
                                 }else{
-                                    return "拼装"
+                                    return "停机"
                                 }
                             },
                             targets:-11

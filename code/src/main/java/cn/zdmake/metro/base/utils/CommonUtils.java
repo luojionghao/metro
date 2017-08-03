@@ -24,7 +24,6 @@ import org.dom4j.Element;
 
 /**
  * @className:CommonUtils.java
- * @classDescription:TODO
  * @author: luowq
  * @createTime: 2015年10月28日
  */

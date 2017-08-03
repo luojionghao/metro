@@ -45,8 +45,6 @@ public class MetroCity implements java.io.Serializable{
 		this.projectPdfUrl = projectPdfUrl;
 	}
 
-
-
 	/**
 	 * 获取updateTime
 	 * @return updateTime updateTime

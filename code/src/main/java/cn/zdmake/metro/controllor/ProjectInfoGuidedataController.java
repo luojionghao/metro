@@ -1,6 +1,5 @@
 package cn.zdmake.metro.controllor;
 
-
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -15,7 +14,6 @@ import cn.zdmake.metro.base.model.CommonResponse;
 import cn.zdmake.metro.base.page.PageResultSet;
 import cn.zdmake.metro.base.utils.CommonUtils;
 import cn.zdmake.metro.base.utils.ConfigProperties;
-import cn.zdmake.metro.base.utils.GsonUtils;
 import cn.zdmake.metro.base.utils.StringUtil;
 import cn.zdmake.metro.model.MetroCity;
 import cn.zdmake.metro.model.MetroLine;
@@ -43,254 +41,278 @@ import cn.zdmake.metro.vo.Jstree.State;
 
 /**
  * 导向数据管理控制器
+ * 
  * @author hank
  *
- * 2016年8月15日
+ *         2016年8月15日
  */
 @Controller
 @RequestMapping("/project-info/guidedata")
 public class ProjectInfoGuidedataController extends BaseController {
-	
+
 	private static Logger logger = Logger.getLogger(ProjectInfoGuidedataController.class);
 	@Resource
 	IMetroCityService cityService;
 	@Resource
 	IMetroLineIntervalDataService lineIntervalDataService;
+
 	/**
 	 * 导向数据管理首页
 	 */
 	@RequestMapping("/index")
-	public String guidedataIndex(){
+	public String guidedataIndex() {
 		return "/project-info/item_guide";
 	}
-	
+
 	/**
 	 * 加载左右线的导向数据信息页面
+	 * 
 	 * @return
 	 */
 	@RequestMapping("/lrinfo")
-	public String lrinfo(){
+	public String lrinfo() {
 		String intervalId = request.getParameter("intervalId");
 		String leftOrRight = request.getParameter("leftOrRight");
 		String desc = request.getParameter("desc");
-		/*PageResultSet<MetroDictionary> dicSet = dictionaryService.findMetroDictionaryInfo(0, 1000);
-		request.setAttribute("dics", dicSet.getList());*/
+		/*
+		 * PageResultSet<MetroDictionary> dicSet =
+		 * dictionaryService.findMetroDictionaryInfo(0, 1000);
+		 * request.setAttribute("dics", dicSet.getList());
+		 */
 		request.setAttribute("intervalId", intervalId);
 		request.setAttribute("leftOrRight", leftOrRight);
 		request.setAttribute("desc", desc);
 		return "/project-info/item_guide_right";
 	}
+
 	/**
 	 * 导出导向数据信息
 	 */
-	@SysControllorLog(menu="导向数据管理",opreate="导出导向数据")
-	@RequestMapping(value="/lrinfo/export",method=RequestMethod.POST)
+	@SysControllorLog(menu = "导向数据管理", opreate = "导出导向数据")
+	@RequestMapping(value = "/lrinfo/export", method = RequestMethod.POST)
 	@ResponseBody
-	public String exportLrinfo(){
-		CommonResponse r = new CommonResponse();
-		try{
+	public CommonResponse exportLrinfo() {
+		CommonResponse commonResponse = new CommonResponse();
+		try {
 			String intervalId = request.getParameter("intervalId");
 			String leftOrRight = request.getParameter("leftOrRight");
 			String desc = request.getParameter("desc");
-			List<MetroLineIntervalData> datas = lineIntervalDataService.findAllByIntervalIdAndLr(Long.parseLong(intervalId), leftOrRight);
-			String excelFileName = writeExcel(datas,desc);
-			if(excelFileName != null){ //成功
-				r.setCode(Constants.CODE_SUCCESS);
-				r.setResult(excelFileName);
-			}else{
+			List<MetroLineIntervalData> datas = lineIntervalDataService
+					.findAllByIntervalIdAndLr(Long.parseLong(intervalId), leftOrRight);
+			String excelFileName = writeExcel(datas, desc);
+			if (excelFileName != null) { // 成功
+				commonResponse.setCode(Constants.CODE_SUCCESS);
+				commonResponse.setResult(excelFileName);
+			} else {
 				logger.error("导出出错");
-				r.setCode(Constants.CODE_FAIL);
-				r.setResult("导出出错");
+				commonResponse.setCode(Constants.CODE_FAIL);
+				commonResponse.setResult("导出出错");
 			}
-		}catch(Exception e){
-			logger.error("导出导向数据信息异常",e);
-			r.setCode(Constants.CODE_FAIL);
-			r.setResult("导出异常");
+		} catch (Exception e) {
+			logger.error("导出导向数据信息异常", e);
+			commonResponse.setCode(Constants.CODE_FAIL);
+			commonResponse.setResult("导出异常");
 		}
-		return GsonUtils.toJson(r);
+		return commonResponse;
 	}
-	
+
 	/**
 	 * 将导向数据信息写入到excel
+	 * 
 	 * @param datas
 	 * @param desc
 	 * @return excel文件名
 	 * @throws Exception
 	 */
-	public String writeExcel(List<MetroLineIntervalData> datas,String desc){
+	public String writeExcel(List<MetroLineIntervalData> datas, String desc) {
 		WritableWorkbook book = null;
-		try{
+		try {
 			Date date = new Date();
-    		SimpleDateFormat simpleFormat = new SimpleDateFormat("yyMMddHHmmssSSS");
-    		String generationStr = simpleFormat.format(date)+ (new Random().nextInt(900)+100);
-			String filename = generationStr+ "_"+"导向数据.xls";
+			SimpleDateFormat simpleFormat = new SimpleDateFormat("yyMMddHHmmssSSS");
+			String generationStr = simpleFormat.format(date) + (new Random().nextInt(900) + 100);
+			String filename = generationStr + "_" + "导向数据.xls";
 			String uploadPath = ConfigProperties.getValueByKey("FILE_UPLOAD_PATH");
-			book = Workbook.createWorkbook(new File(uploadPath+"/"+filename));
+			book = Workbook.createWorkbook(new File(uploadPath + "/" + filename));
 			WritableSheet sheet = book.createSheet("导向数据", 0);
-			String[] title = {"里程","盾首X坐标","盾首Y坐标","盾首Z坐标","线路"};
-			for(int i = 0;i < title.length;i++){
+			String[] title = { "里程", "盾首X坐标", "盾首Y坐标", "盾首Z坐标", "线路" };
+			for (int i = 0; i < title.length; i++) {
 				sheet.addCell(new Label(i, 0, title[i]));
 			}
-			if(CommonUtils.isNotNull(datas)){
-				for(int i = 0;i<datas.size();i++){
+			if (CommonUtils.isNotNull(datas)) {
+				for (int i = 0; i < datas.size(); i++) {
 					MetroLineIntervalData data = datas.get(i);
-					sheet.addCell(new Label(0, i+1, String.valueOf(data.getMileage())));
-					sheet.addCell(new Label(1, i+1, String.valueOf(data.getMapX().floatValue())));
-					sheet.addCell(new Label(2, i+1, String.valueOf(data.getMapY().floatValue())));
-					sheet.addCell(new Label(3, i+1, String.valueOf(data.getMapZ().floatValue())));
-					sheet.addCell(new Label(4, i+1, desc));
+					sheet.addCell(new Label(0, i + 1, String.valueOf(data.getMileage())));
+					sheet.addCell(new Label(1, i + 1, String.valueOf(data.getMapX().floatValue())));
+					sheet.addCell(new Label(2, i + 1, String.valueOf(data.getMapY().floatValue())));
+					sheet.addCell(new Label(3, i + 1, String.valueOf(data.getMapZ().floatValue())));
+					sheet.addCell(new Label(4, i + 1, desc));
 				}
 			}
 			book.write();
 			return filename;
-		}catch (Exception e) {
+		} catch (Exception e) {
 			logger.error("导向数据信息写入excel异常", e);
-		}finally{
-			if(book != null){
-				try{
+		} finally {
+			if (book != null) {
+				try {
 					book.close();
-				}catch(Exception e){
+				} catch (Exception e) {
 					logger.error("导向数据信息写入excel关闭IO异常", e);
 				}
 			}
 		}
 		return null;
 	}
+
 	/**
 	 * 分页查找左右线的导向数据信息
+	 * 
 	 * @return
 	 */
 	@RequestMapping("/lrinfo/find")
 	@ResponseBody
-	public String findLrinfo(){
+	public PageResultSet<MetroLineIntervalData> findLrinfo() {
 		String intervalId = request.getParameter("intervalId");
 		int pageNum = StringUtil.nullToInt(request.getParameter("pageNum"));
 		int pageSize = StringUtil.nullToInt(request.getParameter("pageSize"));
 		String leftOrRight = request.getParameter("leftOrRight");
-		PageResultSet<MetroLineIntervalData> resultSet = lineIntervalDataService.findLineIntervalDataInfo(Long.parseLong(intervalId), leftOrRight, pageNum, pageSize);
-		return GsonUtils.toJson(resultSet);
+		PageResultSet<MetroLineIntervalData> resultSet = lineIntervalDataService
+				.findLineIntervalDataInfo(Long.parseLong(intervalId), leftOrRight, pageNum, pageSize);
+		return resultSet;
 	}
+
 	/**
 	 * 删除导向数据信息
 	 */
-	@SysControllorLog(menu="导向数据管理",opreate="删除导向数据")
-	@RequestMapping(value="/lrinfo/delete",method=RequestMethod.POST)
+	@SysControllorLog(menu = "导向数据管理", opreate = "删除导向数据")
+	@RequestMapping(value = "/lrinfo/delete", method = RequestMethod.POST)
 	@ResponseBody
-	public String deleteLrinfo(){
-		CommonResponse r = new CommonResponse();
-		try{
-			String id = request.getParameter("id");
-			boolean result = lineIntervalDataService.deleteObj(Long.parseLong(id));
-			if(result){ //删除成功
-				r.setCode(Constants.CODE_SUCCESS);
-				r.setResult("删除成功");
-			}else{
+	public CommonResponse deleteLrinfo(@RequestParam("id") Long id) {
+		CommonResponse commonResponse = new CommonResponse();
+		try {
+			boolean result = lineIntervalDataService.deleteObj(id);
+			if (result) { // 删除成功
+				commonResponse.setCode(Constants.CODE_SUCCESS);
+				commonResponse.setResult("删除成功");
+			} else {
 				logger.error("删除导向数据信息出错");
-				r.setCode(Constants.CODE_FAIL);
-				r.setResult("删除出错");
+				commonResponse.setCode(Constants.CODE_FAIL);
+				commonResponse.setResult("删除出错");
 			}
-		}catch(Exception e){
-			logger.error("删除导向数据信息异常",e);
-			r.setCode(Constants.CODE_FAIL);
-			r.setResult("删除异常");
+		} catch (Exception e) {
+			logger.error("删除导向数据信息异常", e);
+			commonResponse.setCode(Constants.CODE_FAIL);
+			commonResponse.setResult("删除异常");
 		}
-		return GsonUtils.toJson(r);
+		return commonResponse;
 	}
+
 	/**
 	 * 导入导向数据信息
+	 * 
 	 * @return
 	 */
-	@SysControllorLog(menu="导向数据管理",opreate="上传导向数据")
-	@RequestMapping(value="/lrinfo/import",method=RequestMethod.POST)
-	public String importLrinfo(@RequestParam("intervalId")String intervalId,@RequestParam("leftOrRight")String leftOrRight,@RequestParam("desc")String desc,@RequestParam(value="file",required=false) MultipartFile file){
-		CommonResponse r = new CommonResponse();
-		try{
-			boolean result = lineIntervalDataService.importExcelData(intervalId,leftOrRight,file);
-			if(result){ //导入成功
-				r.setCode(Constants.CODE_SUCCESS);
-				r.setResult("导入成功");
-			}else{ //导入失败
+	@SysControllorLog(menu = "导向数据管理", opreate = "上传导向数据")
+	@RequestMapping(value = "/lrinfo/import", method = RequestMethod.POST)
+	public String importLrinfo(@RequestParam("intervalId") String intervalId,
+			@RequestParam("leftOrRight") String leftOrRight, @RequestParam("desc") String desc,
+			@RequestParam(value = "file", required = false) MultipartFile file) {
+		CommonResponse commonResponse = new CommonResponse();
+		try {
+			boolean result = lineIntervalDataService.importExcelData(intervalId, leftOrRight, file);
+			if (result) { // 导入成功
+				commonResponse.setCode(Constants.CODE_SUCCESS);
+				commonResponse.setResult("导入成功");
+			} else { // 导入失败
 				logger.error("导入失败");
-				/*r.setCode(Constants.CODE_FAIL);
-				r.setResult("文件上传成功，入库失败");*/
+				/*
+				 * r.setCode(Constants.CODE_FAIL); r.setResult("文件上传成功，入库失败");
+				 */
 				request.setAttribute("msg", "导入失败");
 				return "/common/error";
 			}
-		}catch(Exception e){
+		} catch (Exception e) {
 			logger.error("导入异常", e);
 			request.setAttribute("msg", "导入异常");
 			return "/common/error";
-			/*r.setCode(Constants.CODE_FAIL);
-			r.setResult("文件上传异常");*/
+			/*
+			 * r.setCode(Constants.CODE_FAIL); r.setResult("文件上传异常");
+			 */
 		}
-		return "forward:/project-info/guidedata/lrinfo?intervalId="+intervalId+"&leftOrRight="+leftOrRight+"&desc="+desc;
+		return "forward:/project-info/guidedata/lrinfo?intervalId=" + intervalId + "&leftOrRight=" + leftOrRight
+				+ "&desc=" + desc;
 	}
+
 	/**
 	 * 加载树
 	 */
 	@RequestMapping("/tree-data/get")
 	@ResponseBody
-	public String getTreeData(){
-		Long cityId = 1l; //默认广州
+	public Jstree getTreeData() {
+		Long cityId = 1l; // 默认广州
 		MetroCity city = cityService.findObjById(cityId);
 		Jstree tree = new Jstree();
-		//组装树
-		if(CommonUtils.isNotNull(city)){
+		// 组装树
+		if (CommonUtils.isNotNull(city)) {
 			tree.setId("city");
 			tree.setIcon("city");
 			tree.setText(city.getCityName());
 			tree.setType("city");
-			//tree.setUrl(request.getContextPath()+"/project-info/basic/cityinfo"+"?cityId="+city.getId());
+			// tree.setUrl(request.getContextPath()+"/project-info/basic/cityinfo"+"?cityId="+city.getId());
 			State cityState = tree.new State();
 			cityState.setOpened(true);
 			cityState.setDisabled(true);
 			tree.setState(cityState);
 			List<Jstree> cityChilds = new ArrayList<Jstree>();
-			if(CommonUtils.isNotNull(city.getLineList())){
-				for(MetroLine line : city.getLineList()){
+			if (CommonUtils.isNotNull(city.getLineList())) {
+				for (MetroLine line : city.getLineList()) {
 					Jstree cityChild = new Jstree();
-					cityChild.setId("line_"+line.getId());
+					cityChild.setId("line_" + line.getId());
 					cityChild.setIcon("line");
 					cityChild.setText(line.getLineName());
 					cityChild.setType("line");
-					//cityChild.setUrl(request.getContextPath()+"/project-info/basic/lineinfo"+"?lineId="+line.getId());
+					// cityChild.setUrl(request.getContextPath()+"/project-info/basic/lineinfo"+"?lineId="+line.getId());
 					State lineState = cityChild.new State();
 					lineState.setOpened(true);
 					lineState.setDisabled(true);
 					cityChild.setState(lineState);
 					List<Jstree> lineChilds = new ArrayList<Jstree>();
-					if(CommonUtils.isNotNull(line.getIntervalList())){
-						for(MetroLineInterval interval : line.getIntervalList()){
+					if (CommonUtils.isNotNull(line.getIntervalList())) {
+						for (MetroLineInterval interval : line.getIntervalList()) {
 							Jstree lineChild = new Jstree();
-							lineChild.setId("interval_"+interval.getId());
+							lineChild.setId("interval_" + interval.getId());
 							lineChild.setIcon("area");
 							lineChild.setText(interval.getIntervalName());
 							lineChild.setType("area");
-							//lineChild.setUrl(request.getContextPath()+"/project-info/basic/intervalinfo"+"?intervalId="+interval.getId());
+							// lineChild.setUrl(request.getContextPath()+"/project-info/basic/intervalinfo"+"?intervalId="+interval.getId());
 							State intervalState = lineChild.new State();
 							intervalState.setOpened(true);
 							intervalState.setDisabled(true);
 							lineChild.setState(intervalState);
-							
+
 							List<Jstree> intervalChilds = new ArrayList<Jstree>();
 							Jstree l_intervalChild = new Jstree();
-							l_intervalChild.setId("l_"+interval.getId());
+							l_intervalChild.setId("l_" + interval.getId());
 							l_intervalChild.setIcon("left");
 							l_intervalChild.setText("左线");
 							l_intervalChild.setType("left");
-							l_intervalChild.setUrl(request.getContextPath()+"/project-info/guidedata/lrinfo?leftOrRight=l&intervalId="+interval.getId()+"&desc="+line.getLineName()+"-"+interval.getIntervalName()+"-左线");
+							l_intervalChild.setUrl(request.getContextPath()
+									+ "/project-info/guidedata/lrinfo?leftOrRight=l&intervalId=" + interval.getId()
+									+ "&desc=" + line.getLineName() + "-" + interval.getIntervalName() + "-左线");
 							State lState = l_intervalChild.new State();
 							lState.setOpened(true);
-							if(cityChilds.size() == 0 && lineChilds.size() == 0){ //默认选中第一个
+							if (cityChilds.size() == 0 && lineChilds.size() == 0) { // 默认选中第一个
 								lState.setSelected(true);
 							}
 							l_intervalChild.setState(lState);
 							Jstree r_intervalChild = new Jstree();
-							r_intervalChild.setId("r_"+interval.getId());
+							r_intervalChild.setId("r_" + interval.getId());
 							r_intervalChild.setIcon("right");
 							r_intervalChild.setText("右线");
 							r_intervalChild.setType("right");
-							r_intervalChild.setUrl(request.getContextPath()+"/project-info/guidedata/lrinfo?leftOrRight=r&intervalId="+interval.getId()+"&desc="+line.getLineName()+"-"+interval.getIntervalName()+"-右线");
+							r_intervalChild.setUrl(request.getContextPath()
+									+ "/project-info/guidedata/lrinfo?leftOrRight=r&intervalId=" + interval.getId()
+									+ "&desc=" + line.getLineName() + "-" + interval.getIntervalName() + "-右线");
 							State rState = r_intervalChild.new State();
 							rState.setOpened(true);
 							r_intervalChild.setState(rState);
@@ -307,6 +329,6 @@ public class ProjectInfoGuidedataController extends BaseController {
 				tree.setChildren(cityChilds);
 			}
 		}
-		return GsonUtils.toJson(tree);
+		return tree;
 	}
 }

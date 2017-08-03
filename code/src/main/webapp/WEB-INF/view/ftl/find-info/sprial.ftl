@@ -139,11 +139,20 @@
 			<div class="fill pin total_bentonite" tag="I0020" sfx=" m³">${(maps["${head}I0020${sufix}"])!'-'} m³</div>
 			<!-- 后闸门开度 -->
 			<div class="fill pin strobe_open" tag="F0006" sfx=" mm">${(maps["${head}F0006${sufix}"])!'-'} mm</div>
-			<!-- 泡沫 -->
-			<div class="fill pin gas_flow" tag="H0040" sfx=" L/min">${(maps["${head}H0040${sufix}"])!'-'} L/min</div>
-			<div class="fill pin liquid_flow" tag="H0041" sfx=" L/min">${(maps["${head}H0041${sufix}"])!'-'} L/min</div>
-			<div class="fill pin multiple" tag="H0042">${(maps["${head}H0042${sufix}"])!'-'}</div>
-			<div class="fill pin stoste" tag="H0043">${(maps["${head}H0043${sufix}"])!'-'}</div>
+			<#-- 总推力 -->
+			<div class="fill pin spiral_total_power" tag="B0006" sfx=" kN">${(maps["${head}B0006${sufix}"])!'-'} kN</div>
+			<#-- 刀盘转速 -->
+			<div class="fill pin spiral_knife_velocity" tag="B0002" sfx=" rpm">${(maps["${head}B0002${sufix}"])!'-'} rpm</div>
+			<#-- 刀盘扭矩 -->
+			<div class="fill pin spiral_knife_torque" tag="B0004" sfx=" kNm">${(maps["${head}B0004${sufix}"])!'-'} kNm</div>
+			<#-- 推进速度 -->
+			<div class="fill pin spiral_forward_speed" tag="B0001" sfx=" mm/min">${(maps["${head}B0001${sufix}"])!'-'} mm/min</div>
+			<#-- 泡沫混合液总量 -->
+			<div class="fill pin spiral_foam_mixture" tag="H0001" sfx=" m³">${(maps["${head}H0001${sufix}"])!'-'} m³</div>
+			<#-- 螺旋上部压力 -->
+			<div class="fill pin spiral_upper_pressure" tag="F0004" sfx=" bar">${(maps["${head}F0004${sufix}"])!'-'} bar</div>
+			<#-- 螺旋下部压力 -->
+			<div class="fill pin spiral_lower_pressure" tag="F0003" sfx=" bar">${(maps["${head}F0003${sufix}"])!'-'} bar</div>
 		</div>
 	</div>
 </div>

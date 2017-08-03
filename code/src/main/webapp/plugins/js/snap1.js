@@ -4,6 +4,8 @@ var isCheckRange = false;
 var isCheckCoordinate = false;
 var RelativeX = 0;
 var RelativeY = 0;
+var RelMultiple=0;
+var CoordMultiple=0;
 var T_background, T_text, T_text1,T_distance, T_line;
 var rectR,rectG,textB,textG1,textG2;
 var rectS,textS1,textS2,textS3,textS4;
@@ -24,14 +26,19 @@ if($("#ppSvgUrl").val() == ""){
 Snap.load($("#ppSvgUrl").val(), function(svg) {
     var line;
     var realPoint = gSVG.createSVGPoint();
+    console.log(realPoint);
     var hg = svg.select("g");
     mSVG.append(hg);
     mSVG.zpd();
 
     RelativeX = Number(document.getElementById("RelativeX").firstChild.nodeValue);
     RelativeY = Number(document.getElementById("RelativeY").firstChild.nodeValue);
+    RelMultiple = Number(document.getElementById("RelMultiple").firstChild.nodeValue);
+    CoordMultiple = Number(document.getElementById("CoordMultiple").firstChild.nodeValue);
     Snap(document.getElementById("RelativeX")).attr({ visibility: "hidden" });
     Snap(document.getElementById("RelativeY")).attr({ visibility: "hidden" });
+    Snap(document.getElementById("RelMultiple")).attr({ visibility: "hidden" });
+    Snap(document.getElementById("CoordMultiple")).attr({ visibility: "hidden" });
 
     getTwoPoints(mSVG, realPoint, hg);
     getPoint(mSVG, realPoint, hg);
@@ -131,8 +138,8 @@ function getTwoPoints(svg, realPoint, hg) {
     var x1, y1, x2, y2;
     svg.click(function(evt) {
         if (isCheckRange == true) {
-            realPoint.x = evt.x;
-            realPoint.y = evt.y;
+            realPoint.x = evt.x || evt.clientX;
+            realPoint.y = evt.y || evt.clientY;
             var matriPoint = realPoint.matrixTransform(gSVG.firstElementChild.getScreenCTM().inverse());
 
             var x = matriPoint.x;
@@ -193,7 +200,7 @@ function getTwoPoints(svg, realPoint, hg) {
                 textB.setAttributeNS(null,"strokeWidth",0.1);
                 textB.setAttributeNS(null,"font-size","20px");
                 textB.setAttributeNS(null,"visibility","visible");
-                var textStringB = document.createTextNode( "两点间距离:" + Math.sqrt(Math.pow(Math.abs((x1 - x2) / 4),2)+Math.pow(Math.abs((y1 - y2) / 4),2)).toFixed(2) + "m");
+                var textStringB = document.createTextNode( "两点间距离:" + Math.sqrt(Math.pow(Math.abs((x1 - x2) / RelMultiple),2)+Math.pow(Math.abs((y1 - y2) / RelMultiple),2)).toFixed(2) + "m");
                 textB.appendChild(textStringB);
                 svg.append(textB);
             }
@@ -206,8 +213,9 @@ function getPoint(svg, realPoint, hg) {
     var x1, y1
     svg.click(function(evt) {
         if (isCheckCoordinate == true) {
-            realPoint.x = evt.x;
-            realPoint.y = evt.y;
+
+             realPoint.x = evt.x || evt.clientX;
+             realPoint.y = evt.y || evt.clientY;
             var matriPoint = realPoint.matrixTransform(gSVG.firstElementChild.getScreenCTM().inverse());
 
             var x = matriPoint.x;
@@ -268,7 +276,7 @@ function getPoint(svg, realPoint, hg) {
             textG1.setAttributeNS(null,"strokeWidth",0.1);
             textG1.setAttributeNS(null,"font-size","20px");
             textG1.setAttributeNS(null,"visibility","visible");
-            var textStringG1 = document.createTextNode( "东西坐标:" + Math.abs((x1 / 4) + RelativeX).toFixed(2) + "m");
+            var textStringG1 = document.createTextNode( "东西坐标:" + Math.abs((y1 / RelMultiple) - RelativeY).toFixed(2) + "m");
             textG1.appendChild(textStringG1);
             svg.append(textG1);
 
@@ -280,7 +288,7 @@ function getPoint(svg, realPoint, hg) {
             textG2.setAttributeNS(null,"strokeWidth",0.1);
             textG2.setAttributeNS(null,"font-size","20px");
             textG2.setAttributeNS(null,"visibility","visible");
-            var textStringG2 = document.createTextNode( "南北坐标:" + Math.abs((y1 / 4) - RelativeY).toFixed(2) + "m");
+            var textStringG2 = document.createTextNode( "南北坐标:" + Math.abs((x1 / RelMultiple) + RelativeX).toFixed(2) + "m");
             textG2.appendChild(textStringG2);
             svg.append(textG2);
         }
@@ -626,7 +634,7 @@ function getRingInfo(svg,path,pathArray, count,todayCount,lineData,ringNum,lineN
 //加载沉降点信息
 function loadSettlePoint(msvg,svg,conPoints) {
     for (var i = 0; i < conPoints.length; i++) {
-        var circle1 = svg.circle((conPoints[i].x - RelativeX) * 1.6, Math.abs((conPoints[i].y - RelativeY) * 1.6), 2).attr({
+        var circle1 = svg.circle((conPoints[i].x - RelativeX) * CoordMultiple, Math.abs((conPoints[i].y - RelativeY) * CoordMultiple), 2).attr({
             fill: "#C51414",
             visibility: "visible"
         });
@@ -854,15 +862,16 @@ function loadCoordinatesPoint(msvg,svg,lCoordinates,rCoordinates) {
         }
 
     });
+
     for (var i = 0; i < larr.length; i++) {
 
-        var circle1 = svg.circle((larr[i][0] - RelativeX) * 1.6, Math.abs((larr[i][1] - RelativeY) * 1.6), 1).attr({
+        var circle1 = svg.circle((larr[i][0] - RelativeX) * CoordMultiple, Math.abs((larr[i][1] - RelativeY) * CoordMultiple), 1).attr({
             fill: "#0000ff",
             visibility: "visible",
             name:"coordinates"
         });
         if (i < larr.length - 1) {
-            svg.line((larr[i][0] - RelativeX) * 1.6, Math.abs((larr[i][1] - RelativeY) * 1.6), (larr[i + 1][0] - RelativeX) * 1.6, Math.abs((larr[i + 1][1] - RelativeY) * 1.6)).attr({
+            svg.line((larr[i][0] - RelativeX) * CoordMultiple, Math.abs((larr[i][1] - RelativeY) * CoordMultiple), (larr[i + 1][0] - RelativeX) * CoordMultiple, Math.abs((larr[i + 1][1] - RelativeY) * CoordMultiple)).attr({
                 stroke: "#000",
                 visibility: "visible",
                 strokeWidth: 0.1,
@@ -911,13 +920,13 @@ function loadCoordinatesPoint(msvg,svg,lCoordinates,rCoordinates) {
     });
     for (var i = 0; i < rarr.length; i++) {
 
-        var circle1 = svg.circle((rarr[i][0] - RelativeX) * 1.6, Math.abs((rarr[i][1] - RelativeY) * 1.6), 1).attr({
+        var circle1 = svg.circle((rarr[i][0] - RelativeX) * CoordMultiple, Math.abs((rarr[i][1] - RelativeY) * CoordMultiple), 1).attr({
             fill: "#0000ff",
             visibility: "visible",
             name:"coordinates"
         });
         if (i < rarr.length - 1) {
-            svg.line((rarr[i][0] - RelativeX) * 1.6, Math.abs((rarr[i][1] - RelativeY) * 1.6), (rarr[i + 1][0] - RelativeX) * 1.6, Math.abs((rarr[i + 1][1] - RelativeY) * 1.6)).attr({
+            svg.line((rarr[i][0] - RelativeX) * CoordMultiple, Math.abs((rarr[i][1] - RelativeY) * CoordMultiple), (rarr[i + 1][0] - RelativeX) * CoordMultiple, Math.abs((rarr[i + 1][1] - RelativeY) * CoordMultiple)).attr({
                 stroke: "#000",
                 visibility: "visible",
                 strokeWidth: 0.1,
@@ -1295,7 +1304,8 @@ function hidecoord(){
     var nv = document.getElementById("hidecoord");
     nv.innerHTML="显示线路";
     nv.onclick =function(){showcoord()};
-    var lineList = document.getElementsByName("coordinates");
+    var lineList = $("*[name='coordinates']");
+    console.log(lineList);
     for(var i=0;i<lineList.length;i++){
         Snap(lineList[i]).attr({ visibility: "hidden" });
     }
@@ -1305,7 +1315,8 @@ function showcoord(){
     var nv = document.getElementById("hidecoord");
     nv.innerHTML="隐藏线路";
     nv.onclick = function(){hidecoord()};
-    var lineList = document.getElementsByName("coordinates");
+    var lineList = $("*[name='coordinates']");
+    console.log(lineList);
     for(var i=0;i<lineList.length;i++){
         Snap(lineList[i]).attr({ visibility: "visible" });
     }
@@ -1324,9 +1335,9 @@ function moveToCenter(svg, points) {
 
     var svgBox = svg.getBBox();
     console.log(svgBox);
-    var divWidth = svg.node.clientWidth;
+    var divWidth =$("#svg").outerWidth(false);
     console.log(divWidth);
-    var divHeight = svg.node.clientHeight;
+    var divHeight = $("#svg").outerHeight(false);
     panZoom(svg.select("g"), -points[1] + divWidth / 2, -points[2] + divHeight / 2, 10, points[1], points[2]);
 
 }

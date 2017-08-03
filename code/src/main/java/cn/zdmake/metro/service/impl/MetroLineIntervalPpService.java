@@ -3,7 +3,7 @@ package cn.zdmake.metro.service.impl;
 import java.util.HashMap;
 import java.util.Map;
 
-import jxl.common.Logger;
+//import jxl.common.Logger;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,7 +22,7 @@ import cn.zdmake.metro.service.IMetroLineIntervalPpService;
 @Service("lineIntervalPpService")
 public class MetroLineIntervalPpService extends BaseService<MetroLineIntervalPp> implements IMetroLineIntervalPpService{
 	
-	private static Logger logger = Logger.getLogger(MetroLineIntervalPpService.class);
+	// private static Logger logger = Logger.getLogger(MetroLineIntervalPpService.class);
 
 	@Autowired
 	IMetroLineIntervalPpDao lineIntervalPpDao;

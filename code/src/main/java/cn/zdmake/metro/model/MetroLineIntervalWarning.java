@@ -1,7 +1,5 @@
 package cn.zdmake.metro.model;
 
-import cn.zdmake.metro.background.vo.IntervalWarningVO;
-
 import java.util.Date;
 
 /**
@@ -35,7 +33,6 @@ public class MetroLineIntervalWarning implements java.io.Serializable{
 	private MetroDictionary paramDic;
 	
 	public MetroLineIntervalWarning() {
-		// TODO Auto-generated constructor stub
 	}
 
 	/**

@@ -41,8 +41,8 @@ public class StringUtil {
 	}
 
 	public static String timeToString(String date){
-		Date date1=new Date();
-		long time = date1.getTime();
+		// Date date1=new Date();
+		// long time = date1.getTime();
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		long lt = new Long(date);
 		Date d = new Date(lt*1000);

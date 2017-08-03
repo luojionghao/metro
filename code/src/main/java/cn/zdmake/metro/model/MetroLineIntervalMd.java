@@ -28,7 +28,6 @@ public class MetroLineIntervalMd implements java.io.Serializable{
 	private Float spSpeed;//沉降速率
 	
 	public MetroLineIntervalMd() {
-		// TODO Auto-generated constructor stub
 	}
 
 	/**

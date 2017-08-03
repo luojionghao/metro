@@ -2,7 +2,6 @@ package cn.zdmake.metro.service;
 
 import cn.zdmake.metro.model.MetroLineInterval;
 
-import java.util.List;
 import java.util.Map;
 
 /**

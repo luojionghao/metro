@@ -29,7 +29,7 @@ public class MetroDataRightService implements IMetroDataRightService {
 		params.put("userId", userId);
 		drDao.deleteObj(params);
 		if(dataRight!=null&&!"".equals(dataRight)){
-			String[] dataRights = dataRight.split(",");
+			// String[] dataRights = dataRight.split(",");
 			List<MetroUserDataRel> udrlist = new ArrayList<MetroUserDataRel>();
 			MetroUserDataRel udr = null;
 			for(String drt:dataRight.split(",")){

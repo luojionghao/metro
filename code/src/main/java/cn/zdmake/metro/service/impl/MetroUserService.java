@@ -19,16 +19,14 @@ public class MetroUserService extends BaseService<MetroUser> implements IMetroUs
 	IMetroUserDao userDao;
 
 	@Override
-	public PageResultSet<MetroUser> findMetroUserInfo(String deptId,
-													  int pageNum, int pageSize) {
+	public PageResultSet<MetroUser> findMetroUserInfo(String deptId, int pageNum, int pageSize) {
 		Map<String, Object> params = new HashMap<>();
-		params.put("deptId", deptId);		
+		params.put("deptId", deptId);
 		return this.getPageResultSet(params, pageNum, pageSize, userDao);
 	}
 
 	@Override
-	public boolean addMetroUserInfo(String username, String password,
-			String name, String deptIds, String roleId) {
+	public boolean addMetroUserInfo(String username, String password, String name, String deptIds, String roleId) {
 		MetroUser user = new MetroUser();
 		user.setUsername(username);
 		user.setPassword(password);
@@ -39,28 +37,28 @@ public class MetroUserService extends BaseService<MetroUser> implements IMetroUs
 		params.put("userId", user.getId());
 		params.put("deptIds", deptIds.split(","));
 		count = count + userDao.addUserDeptRel(params);
-		return count>1?true:false;
+		return count > 1 ? true : false;
 	}
 
 	@Override
-	public boolean editMetroUserInfo(String userId, String username, String name,
-			String oldDeptIds, String deptIds, String roleId) {
+	public boolean editMetroUserInfo(String userId, String username, String name, String oldDeptIds, String deptIds,
+			String roleId) {
 		Map<String, Object> params = new HashMap<>();
 		params.put("userId", userId);
 		params.put("username", username);
 		params.put("name", name);
 		params.put("roleId", roleId);
 		int count = userDao.updateObj(params);
-		
-		if(deptIds!=null){			
+
+		if (deptIds != null) {
 			params.clear();
 			params.put("userId", userId);
 			params.put("deptIds", oldDeptIds.split(","));
-			count = count + userDao.delUserDeptRel(params);			
+			count = count + userDao.delUserDeptRel(params);
 			params.put("deptIds", deptIds.split(","));
 			count = count + userDao.addUserDeptRel(params);
-		}		
-		return count>2?true:false;
+		}
+		return count > 2 ? true : false;
 	}
 
 	@Override
@@ -69,12 +67,12 @@ public class MetroUserService extends BaseService<MetroUser> implements IMetroUs
 		params.put("userId", userId);
 		params.put("deptId", deptId);
 		int count = 0;
-		if(deptSize==1){
-			count = userDao.deleteObj(params);//当用户只有一个部门时
-		}else{
-			count = userDao.deleteObjDeptRel(params);//当用户有多个部门时
+		if (deptSize == 1) {
+			count = userDao.deleteObj(params);// 当用户只有一个部门时
+		} else {
+			count = userDao.deleteObjDeptRel(params);// 当用户有多个部门时
 		}
-		return count>0?true:false;
+		return count > 0 ? true : false;
 	}
 
 	@Override
@@ -82,7 +80,7 @@ public class MetroUserService extends BaseService<MetroUser> implements IMetroUs
 		Map<String, Object> params = new HashMap<>();
 		params.put("userId", userId);
 		params.put("password", password);
-		return userDao.editUserPassword(params)>0?true:false;
+		return userDao.editUserPassword(params) > 0 ? true : false;
 	}
 
 	@Override
@@ -97,29 +95,28 @@ public class MetroUserService extends BaseService<MetroUser> implements IMetroUs
 	public boolean findMetroUserUsername(String username) {
 		Map<String, Object> params = new HashMap<>();
 		params.put("username", username);
-		return userDao.findMetroUserUsername(params)>0?true:false;
+		return userDao.findMetroUserUsername(params) > 0 ? true : false;
 	}
 
 	@Override
 	public List<MetroUser> findAllUser() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public PageResultSet<MetroUser> findAllUser(int pageNum, int pageSize) {
-		Map<String, Object> params = new HashMap<>();	
+		Map<String, Object> params = new HashMap<>();
 		int total = userDao.countObjsr(params);
-		Page page = new Page(total,pageSize,pageNum);
-		if(total>0){			
+		Page page = new Page(total, pageSize, pageNum);
+		if (total > 0) {
 			params.put("start", page.getBeginIndex());
 			params.put("pageSize", page.getPageSize());
 			List<MetroUser> userList = userDao.findObjsListr(params);
 			PageResultSet<MetroUser> pageResult = null;
-			if(userList!=null&&userList.size()>0){			
+			if (userList != null && userList.size() > 0) {
 				pageResult = new PageResultSet<>();
 				pageResult.setList(userList);
-				pageResult.setPage(page);			
+				pageResult.setPage(page);
 			}
 			return pageResult;
 		}
@@ -128,7 +125,9 @@ public class MetroUserService extends BaseService<MetroUser> implements IMetroUs
 
 	/**
 	 * 通过id查询用户信息
-	 * @param userId 用户Id
+	 * 
+	 * @param userId
+	 *            用户Id
 	 * @return
 	 */
 	@Override
@@ -137,5 +136,5 @@ public class MetroUserService extends BaseService<MetroUser> implements IMetroUs
 		params.put("userId", userId);
 		return userDao.findObjById(params);
 	}
-	
+
 }

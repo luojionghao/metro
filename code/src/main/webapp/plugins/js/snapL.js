@@ -30,6 +30,8 @@ Snap.load($("#sectionSvgUrl").val(), function(svg) {
     mSVG.zpd();
     RelativeX = Number(document.getElementById("RelativeX").firstChild.nodeValue);
     RelativeY = Number(document.getElementById("RelativeY").firstChild.nodeValue);
+    console.log("RelativeX:"+RelativeX);
+    console.log("RelativeY:"+RelativeY);
     Snap(document.getElementById("RelativeX")).attr({ visibility: "hidden" });
     Snap(document.getElementById("RelativeY")).attr({ visibility: "hidden" });
 
@@ -50,7 +52,7 @@ Snap.load($("#sectionSvgUrl").val(), function(svg) {
     // getRingInfo(mSVG,pathR,pathArrayR, countR,rLinedata,$("#rvr").val(), "右线");
      drawTbm(pathL,pathArrayL, countL);
     // drawTbm(pathR,pathArrayR, countR);
-     loadCoordinatesPoint(mSVG,hg,null,null);
+    //loadCoordinatesPoint(mSVG,hg,lCoordinates,rCoordinates);
     //移动放大到最新施工点
     if($("#goNumAll").val() != 0){
         moveToNum($("#goNumAll").val())
@@ -104,8 +106,8 @@ function getTwoPoints(svg, realPoint, hg) {
     var x1, y1, x2, y2;
     svg.click(function(evt) {
         if (isCheckRange == true) {
-            realPoint.x = evt.x;
-            realPoint.y = evt.y;
+            realPoint.x = evt.x || evt.clientX;
+            realPoint.y = evt.y || evt.clientY;
             var matriPoint = realPoint.matrixTransform(gSVG.firstElementChild.getScreenCTM().inverse());
 
             var x = matriPoint.x;
@@ -200,8 +202,8 @@ function getPoint(svg, realPoint, hg) {
     var x1, y1;
     svg.click(function(evt) {
         if (isCheckCoordinate == true) {
-            realPoint.x = evt.x;
-            realPoint.y = evt.y;
+            realPoint.x = evt.x || evt.clientX;
+            realPoint.y = evt.y || evt.clientY;
             var matriPoint = realPoint.matrixTransform(gSVG.firstElementChild.getScreenCTM().inverse());
 
             var x = matriPoint.x;
@@ -262,7 +264,7 @@ function getPoint(svg, realPoint, hg) {
             textG1.setAttributeNS(null,"font-size","20px");
             textG1.setAttributeNS(null,"font-weight","bold");
             textG1.setAttributeNS(null,"visibility","visible");
-            var textStringG1 = document.createTextNode( "    东西坐标:" + Math.abs((x1 / 4) + RelativeX).toFixed(2) + "m");
+            var textStringG1 = document.createTextNode( "    东西坐标:" + (RelativeY - (y1 / 4)).toFixed(2) + "m");
             textG1.appendChild(textStringG1);
             svg.append(textG1);
 
@@ -274,7 +276,7 @@ function getPoint(svg, realPoint, hg) {
             textG2.setAttributeNS(null,"strokeWidth",0.1);
             textG2.setAttributeNS(null,"font-size","20px");
             textG2.setAttributeNS(null,"visibility","visible");
-            var textStringG2 = document.createTextNode( "    南北坐标:" + Math.abs((y1 / 4) - RelativeY).toFixed(2) + "m");
+            var textStringG2 = document.createTextNode( "    南北坐标:" + ((x1 / 4) + RelativeX).toFixed(2) + "m");
             textG2.appendChild(textStringG2);
             svg.append(textG2);
 
@@ -587,10 +589,10 @@ function panZoom(svg, xPan, yPan, scale, xZoom, yZoom) {
 function moveToCenter(svg, points) {
 
     var svgBox = svg.getBBox();
-
-    var divWidth = svg.node.clientWidth;
-
-    var divHeight = svg.node.clientHeight;
+    console.log(svgBox);
+    var divWidth =$("#svg").outerWidth(false);
+    console.log(divWidth);
+    var divHeight = $("#svg").outerHeight(false);
     panZoom(svg.select("g"), -points[1] + divWidth / 2, -points[2] + divHeight / 2, 10, points[1], points[2]);
 
 }
@@ -630,7 +632,7 @@ function hidecoord(){
     var nv = document.getElementById("hidecoord");
     nv.innerHTML="显示线路";
     nv.onclick =function(){showcoord()};
-    var lineList = document.getElementsByName("coordinates");
+    var lineList = $("*[name='coordinates']");
     for(var i=0;i<lineList.length;i++){
         Snap(lineList[i]).attr({ visibility: "hidden" });
     }
@@ -640,7 +642,7 @@ function showcoord(){
     var nv = document.getElementById("hidecoord");
     nv.innerHTML="隐藏线路";
     nv.onclick = function(){hidecoord()};
-    var lineList = document.getElementsByName("coordinates");
+    var lineList = $("*[name='coordinates']");
     for(var i=0;i<lineList.length;i++){
         Snap(lineList[i]).attr({ visibility: "visible" });
     }
@@ -649,7 +651,7 @@ function showcoord(){
 //加载剖面坐标点信息
 function loadCoordinatesPoint(msvg,svg,lCoordinates,rCoordinates) {
     var larr = new Array();
-    $.each(conArray,function (name, value){
+    $.each(lCoordinates,function (name, value){
         if(value.x && value.y){
             larr.push([value.x, value.y,value.z]);
         }

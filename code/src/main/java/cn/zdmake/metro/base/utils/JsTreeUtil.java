@@ -27,7 +27,7 @@ public class JsTreeUtil {
 	 * @param diss Boolean[4] 0city 1line 2interval 3lr  true/false
 	 * @return
 	 */
-	public static String getTreeData(HttpServletRequest request, MetroCity city, String[] urls, Boolean[] diss){
+	public static List<Jstree> getTreeData(HttpServletRequest request, MetroCity city, String[] urls, Boolean[] diss){
 		List<Jstree> tl = new ArrayList<Jstree>();
 		Jstree tree = new Jstree();
 		int ln = 0;
@@ -117,6 +117,6 @@ public class JsTreeUtil {
 			}
 		}
 		tl.add(tree);
-		return GsonUtils.toJson(tl);
+		return tl;
 	}
 }

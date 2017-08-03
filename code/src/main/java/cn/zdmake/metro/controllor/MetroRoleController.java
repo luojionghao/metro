@@ -4,9 +4,8 @@ import java.util.List;
 
 import cn.zdmake.metro.base.controller.BaseController;
 import cn.zdmake.metro.base.page.PageResultSet;
-import cn.zdmake.metro.base.utils.GsonUtils;
 import cn.zdmake.metro.base.utils.StringUtil;
-import jxl.common.Logger;
+//import jxl.common.Logger;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -26,7 +25,7 @@ import cn.zdmake.metro.service.ISysRightService;
 @Controller
 @RequestMapping("/role")
 public class MetroRoleController extends BaseController {
-	private static Logger logger = Logger.getLogger(MetroRoleController.class);
+	// private static Logger logger = Logger.getLogger(MetroRoleController.class);
 	@Autowired
 	private IMetroRoleService roleService;
 	
@@ -52,11 +51,11 @@ public class MetroRoleController extends BaseController {
 	@SysControllorLog(menu="角色管理",opreate="查询")
 	@RequestMapping("/find/roles")
 	@ResponseBody
-	public String findRoleAll(){
+	public PageResultSet<MetroRole> findRoleAll(){
 		String pageNum = request.getParameter("pageNum");
 		String pageSize = request.getParameter("pageSize");
 		PageResultSet<MetroRole> roleResult= roleService.findRoleList(StringUtil.nullToInt(pageNum), StringUtil.nullToInt(pageSize));
-		return GsonUtils.toJson(roleResult);
+		return roleResult;
 	}
 	
 	/**

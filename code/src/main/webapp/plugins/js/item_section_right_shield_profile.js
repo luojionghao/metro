@@ -111,6 +111,7 @@ function post_profile_form_data(url,formId,modalId){
             if(result.code == "1"){
                 alert('保存成功！');
                 $('#pagination_shield_profile').pagination('remote');
+                $("#new_shield_profile").find("input[type=text], textarea").val("");
             }else{
                 alert('网络不给力，请稍后再试!');
             }

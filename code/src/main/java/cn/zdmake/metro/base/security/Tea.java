@@ -1,256 +1,221 @@
 package cn.zdmake.metro.base.security;
 
 import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-
-import cn.zdmake.metro.base.utils.GsonUtils;
-import org.apache.http.NameValuePair;
-import org.apache.http.message.BasicNameValuePair;
 import org.apache.xml.security.utils.Base64;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-
-
-
 /**
- * Tea算法
- * 每次操作可以处理8个字节数据
- * KEY为16字节,应为包含4个int型数的int[]，一个int为4个字节
+ * Tea算法 每次操作可以处理8个字节数据 KEY为16字节,应为包含4个int型数的int[]，一个int为4个字节
  * 加密解密轮数应为8的倍数，推荐加密轮数为64轮
- * */
+ */
 public class Tea {
-	
-	//加解密示例
-	public static void main(String[] args) throws Exception{
-		//客户端加密并请求
-		Map<String,Object> requestMap = new HashMap<String, Object>();
-		requestMap.put("key1", "value1");
-		requestMap.put("key2", "value2");
-		String requestParameters = Tea.encryptByBase64Tea(new Gson().toJson(requestMap));
-		List<NameValuePair> nvps = new ArrayList<NameValuePair>();
-		nvps.add(new BasicNameValuePair("parameters", requestParameters)); //固定使用“parameters”
-		//将nvps作为请求参数，向接口发起get或post请求即可
-		
-		//服务端解密获取请求信息
-		HttpServletRequest request = null;
-		String parameters = request.getParameter("parameters");
-		String decodeParams = Tea.decryptByBase64Tea(parameters);
-		Map<String,Object> map = GsonUtils.fromJson(decodeParams, new TypeToken<Map<String, Object>>() {}.getType());
-		//获取到的map即为解密后的请求信息
-		
-		//服务端加密返回
-		Map<String,Object> responseMap = new HashMap<String,Object>();
-		responseMap.put("code", "200"); //返回结果代码，200：成功  400：失败
-		responseMap.put("message", "message to hint"); //返回的提示消息
-		responseMap.put("result","resultObj"); //返回的结果值
-		String result1 = GsonUtils.toJson(responseMap);
-		String responseStr = Tea.encryptByBase64Tea(result1);
-		//return responseStr;
-		
-		//客户端接收返回信息
-		String result2 = Tea.decryptByBase64Tea(responseStr);
-		Map<String,Object> map2 = GsonUtils.fromJson(result2, new TypeToken<Map<String, Object>>() {}.getType());
-		Object r = map2.get("result");
-		
-
-	}
-	
 
 	/**
 	 * 加密解密所用的KEY
 	 */
-	private final static int[] KEY = new int[]{
-        0xf38bd5a4, 0x495fac32,
-        0x35673ffa, 0x469f5687
-    };
-	
-	 /**
-     * 加密（先Gzip压缩，再把字节数组转为16进制字符串，接着TEA加密，最后Base64编码）
-     * @param info 需加密内容
-     * @return
-     */
-    public static String encryptByBase64Tea(String info) throws UnsupportedEncodingException,Exception{
-    	byte[] compressedBytes = GZIP.compressToByte(info) ;
-    	String hexStr = bytes2hex( compressedBytes );
-    	byte[] teaBytes = encryptByTea(  hexStr ) ;
-    	return Base64.encode( teaBytes );
-    }
-    
-    /**
-     * 解密（先Base64解码，再TEA解密，接着把16进制字符串转为字节数组，最后解压）
-     * @param secretInfo 需解密内容
-     * @return
-     */
-    public static String decryptByBase64Tea( String secretInfo ){
-    	byte[] decodeStr = null ;
-    	byte[] hexBytes = null ;
+	private final static int[] KEY = new int[] { 0xf38bd5a4, 0x495fac32, 0x35673ffa, 0x469f5687 };
+
+	/**
+	 * 加密（先Gzip压缩，再把字节数组转为16进制字符串，接着TEA加密，最后Base64编码）
+	 * 
+	 * @param info
+	 *            需加密内容
+	 * @return Base64编码的密文
+	 */
+	public static String encryptByBase64Tea(String info) throws UnsupportedEncodingException, Exception {
+		byte[] compressedBytes = GZIP.compressToByte(info);
+		String hexStr = bytes2hex(compressedBytes);
+		byte[] teaBytes = encryptByTea(hexStr);
+		return Base64.encode(teaBytes);
+	}
+
+	/**
+	 * 解密（先Base64解码，再TEA解密，接着把16进制字符串转为字节数组，最后解压）
+	 * 
+	 * @param secretInfo
+	 *            需解密内容
+	 * @return 解密后的明文
+	 */
+	public static String decryptByBase64Tea(String secretInfo) {
+		byte[] decodeStr = null;
+		byte[] hexBytes = null;
 		try {
-			decodeStr = Base64.decode( secretInfo );
-			String teaStr = decryptByTea( decodeStr );
+			decodeStr = Base64.decode(secretInfo);
+			String teaStr = decryptByTea(decodeStr);
 			hexBytes = hex2bytes(teaStr);
-			
+
 		} catch (Exception e) {
 			return null;
 		}
-    	return GZIP.uncompressToString(hexBytes);  
-    }
-	
+		return GZIP.uncompressToString(hexBytes);
+	}
+
 	/**
 	 * 加密
-	 * @param content 加密数据
-	 * @param offset 位移
-	 * @param key 加密解密KEY
-	 * @param times 加密解密轮数
+	 * 
+	 * @param content
+	 *            加密数据
+	 * @param offset
+	 *            位移
+	 * @param key
+	 *            加密解密KEY
+	 * @param times
+	 *            加密解密轮数
 	 * @return
 	 */
-	private static byte[] encrypt(byte[] content, int offset, int[] key, int times) throws Exception{
-        int[] tempInt = byteToInt(content, offset);
-        int y = tempInt[0], z = tempInt[1], sum = 0, i;
-        int delta=0x9e3779b9; //这是算法标准给的值
-        int a = key[0], b = key[1], c = key[2], d = key[3]; 
+	private static byte[] encrypt(byte[] content, int offset, int[] key, int times) throws Exception {
+		int[] tempInt = byteToInt(content, offset);
+		int y = tempInt[0], z = tempInt[1], sum = 0, i;
+		int delta = 0x9e3779b9; // 这是算法标准给的值
+		int a = key[0], b = key[1], c = key[2], d = key[3];
 
-        for (i = 0; i < times; i++) {   
-            sum += delta;
-            y += ((z<<4) + a) ^ (z + sum) ^ ((z>>5) + b);
-            z += ((y<<4) + c) ^ (y + sum) ^ ((y>>5) + d);
-        }
-        tempInt[0]=y;
-        tempInt[1]=z; 
-        return intToByte(tempInt, 0);
-    }
-    
-    /**
-     * 解密
-     * @param encryptContent 解密数据
-     * @param offset 位移
-     * @param key 加密解密KEY
-     * @param times 加密解密轮数
-     * @return
-     */
-    private static byte[] decrypt(byte[] encryptContent, int offset, int[] key, int times) throws Exception{
-        int[] tempInt = byteToInt(encryptContent, offset);
-        int y = tempInt[0],  z = tempInt[1], sum = 0, i;
-        int delta=0x9e3779b9; //这是算法标准给的值
-        int a = key[0], b = key[1], c = key[2], d = key[3];
-        if (times == 32)
-            sum = 0xC6EF3720; /* delta << 5*/
-        else if (times == 16)
-            sum = 0xE3779B90; /* delta << 4*/
-        else
-            sum = delta * times;
+		for (i = 0; i < times; i++) {
+			sum += delta;
+			y += ((z << 4) + a) ^ (z + sum) ^ ((z >> 5) + b);
+			z += ((y << 4) + c) ^ (y + sum) ^ ((y >> 5) + d);
+		}
+		tempInt[0] = y;
+		tempInt[1] = z;
+		return intToByte(tempInt, 0);
+	}
 
-        for(i = 0; i < times; i++) { 
-            z -= ((y<<4) + c) ^ (y + sum) ^ ((y>>5) + d);
-            y -= ((z<<4) + a) ^ (z + sum) ^ ((z>>5) + b);
-            sum -= delta; 
-        }
-        tempInt[0] = y;
-        tempInt[1] = z;
+	/**
+	 * 解密
+	 * 
+	 * @param encryptContent
+	 *            解密数据
+	 * @param offset
+	 *            位移
+	 * @param key
+	 *            加密解密KEY
+	 * @param times
+	 *            加密解密轮数
+	 * @return
+	 */
+	private static byte[] decrypt(byte[] encryptContent, int offset, int[] key, int times) throws Exception {
+		int[] tempInt = byteToInt(encryptContent, offset);
+		int y = tempInt[0], z = tempInt[1], sum = 0, i;
+		int delta = 0x9e3779b9; // 这是算法标准给的值
+		int a = key[0], b = key[1], c = key[2], d = key[3];
+		if (times == 32)
+			sum = 0xC6EF3720; /* delta << 5 */
+		else if (times == 16)
+			sum = 0xE3779B90; /* delta << 4 */
+		else
+			sum = delta * times;
 
-        return intToByte(tempInt, 0);
-    }
-    
-    /**
-     * byte[]型数据转成int[]型数据
-     * @param content 内容数据数组
-     * @param offset 位移
-     * @return
-     */
-    private static int[] byteToInt(byte[] content, int offset){
+		for (i = 0; i < times; i++) {
+			z -= ((y << 4) + c) ^ (y + sum) ^ ((y >> 5) + d);
+			y -= ((z << 4) + a) ^ (z + sum) ^ ((z >> 5) + b);
+			sum -= delta;
+		}
+		tempInt[0] = y;
+		tempInt[1] = z;
 
-        int[] result = new int[content.length >> 2];//除以2的n次方 == 右移n位 即 content.length / 4 == content.length >> 2
-        for(int i = 0, j = offset; j < content.length; i++, j += 4){
-            result[i] = transform(content[j + 3]) | transform(content[j + 2]) << 8 |
-            transform(content[j + 1]) << 16 | (int)content[j] << 24;
-        }
-        return result;
-        
-    }
-    
-    /**
-     * int[]型数据转成byte[]型数据
-     * @param content 内容数据数组
-     * @param offset 位移
-     * @return
-     */
-    private static byte[] intToByte(int[] content, int offset) throws Exception{
-        byte[] result = new byte[content.length << 2];//乘以2的n次方 == 左移n位 即 content.length * 4 == content.length << 2
-        for(int i = 0, j = offset; j < result.length; i++, j += 4){
-            result[j + 3] = (byte)(content[i] & 0xff);
-            result[j + 2] = (byte)((content[i] >> 8) & 0xff);
-            result[j + 1] = (byte)((content[i] >> 16) & 0xff);
-            result[j] = (byte)((content[i] >> 24) & 0xff);
-        }
-        return result;
-    }
-    
-    /**
-     * 若某字节为负数则需将其转成无符号正数
-     * @param temp
-     * @return
-     */
-    private static int transform(byte temp){
-        int tempInt = (int)temp;
-        if(tempInt < 0){
-            tempInt += 256;
-        }
-        return tempInt;
-    }
-    
-    
-    /**
-     * 通过TEA算法加密信息
-     * @param info 需加密内容
-     * @return
-     */
-    public static byte[] encryptByTea(String info) throws Exception{
-        byte[] temp = info.getBytes();
-        int n = 8 - temp.length % 8;//若temp的位数不足8的倍数,需要填充的位数
-        byte[] encryptStr = new byte[temp.length + n];
-        encryptStr[0] = (byte)n;
-        System.arraycopy(temp, 0, encryptStr, n, temp.length);
-        byte[] result = new byte[encryptStr.length];
-        for(int offset = 0; offset < result.length; offset += 8){
-            byte[] tempEncrpt = encrypt(encryptStr, offset, KEY, 32);
-            System.arraycopy(tempEncrpt, 0, result, offset, 8);
-        }
-        return result;
-    }
-    
-   
-    
-    /**
-     * 通过TEA算法解密信息
-     * @param secretInfo
-     * @return
-     */
-    public static String decryptByTea(byte[] secretInfo) throws Exception{
-        byte[] decryptStr = null;
-        byte[] tempDecrypt = new byte[secretInfo.length];
-        for(int offset = 0; offset < secretInfo.length; offset += 8){
-            decryptStr = decrypt(secretInfo, offset, KEY, 32);
-            System.arraycopy(decryptStr, 0, tempDecrypt, offset, 8);
-        }
-        
-        int n = tempDecrypt[0];
-        return new String(tempDecrypt, n, decryptStr.length - n);
-        
-    }
-    
-  
-   
-    /**
-     * 把字节数组转为16进制字符串
-     * @param bytes 字节数组
-     * @return
-     */
-    private static String bytes2hex(byte[] bytes) {
+		return intToByte(tempInt, 0);
+	}
+
+	/**
+	 * byte[]型数据转成int[]型数据
+	 * 
+	 * @param content
+	 *            内容数据数组
+	 * @param offset
+	 *            位移
+	 * @return
+	 */
+	private static int[] byteToInt(byte[] content, int offset) {
+
+		int[] result = new int[content.length >> 2];// 除以2的n次方 == 右移n位 即 content.length / 4 == content.length >> 2
+		for (int i = 0, j = offset; j < content.length; i++, j += 4) {
+			result[i] = transform(content[j + 3]) | transform(content[j + 2]) << 8 | transform(content[j + 1]) << 16
+					| (int) content[j] << 24;
+		}
+		return result;
+
+	}
+
+	/**
+	 * int[]型数据转成byte[]型数据
+	 * 
+	 * @param content
+	 *            内容数据数组
+	 * @param offset
+	 *            位移
+	 * @return
+	 */
+	private static byte[] intToByte(int[] content, int offset) throws Exception {
+		byte[] result = new byte[content.length << 2];// 乘以2的n次方 == 左移n位 即 content.length * 4 == content.length << 2
+		for (int i = 0, j = offset; j < result.length; i++, j += 4) {
+			result[j + 3] = (byte) (content[i] & 0xff);
+			result[j + 2] = (byte) ((content[i] >> 8) & 0xff);
+			result[j + 1] = (byte) ((content[i] >> 16) & 0xff);
+			result[j] = (byte) ((content[i] >> 24) & 0xff);
+		}
+		return result;
+	}
+
+	/**
+	 * 若某字节为负数则需将其转成无符号正数
+	 * 
+	 * @param temp
+	 * @return
+	 */
+	private static int transform(byte temp) {
+		int tempInt = (int) temp;
+		if (tempInt < 0) {
+			tempInt += 256;
+		}
+		return tempInt;
+	}
+
+	/**
+	 * 通过TEA算法加密信息
+	 * 
+	 * @param info
+	 *            需加密内容
+	 * @return
+	 */
+	public static byte[] encryptByTea(String info) throws Exception {
+		byte[] temp = info.getBytes();
+		int n = 8 - temp.length % 8; // 若temp的位数不足8的倍数,需要填充的位数
+		byte[] encryptStr = new byte[temp.length + n];
+		encryptStr[0] = (byte) n;
+		System.arraycopy(temp, 0, encryptStr, n, temp.length);
+		byte[] result = new byte[encryptStr.length];
+		for (int offset = 0; offset < result.length; offset += 8) {
+			byte[] tempEncrpt = encrypt(encryptStr, offset, KEY, 32);
+			System.arraycopy(tempEncrpt, 0, result, offset, 8);
+		}
+		return result;
+	}
+
+	/**
+	 * 通过TEA算法解密信息
+	 * 
+	 * @param secretInfo
+	 * @return
+	 */
+	public static String decryptByTea(byte[] secretInfo) throws Exception {
+		byte[] decryptStr = null;
+		byte[] tempDecrypt = new byte[secretInfo.length];
+		for (int offset = 0; offset < secretInfo.length; offset += 8) {
+			decryptStr = decrypt(secretInfo, offset, KEY, 32);
+			System.arraycopy(decryptStr, 0, tempDecrypt, offset, 8);
+		}
+
+		int n = tempDecrypt[0];
+		return new String(tempDecrypt, n, decryptStr.length - n);
+
+	}
+
+	/**
+	 * 把字节数组转为16进制字符串
+	 * 
+	 * @param bytes
+	 *            字节数组
+	 * @return
+	 */
+	private static String bytes2hex(byte[] bytes) {
 		int len = bytes.length;
 		StringBuffer sb = new StringBuffer();
 		for (int i = 0; i < len; i++) {
@@ -269,13 +234,15 @@ public class Tea {
 		return sb.toString().toUpperCase();
 
 	}
-	
+
 	/**
 	 * 把16进制字符串转换为字节数组
-	 * @param hex 16进制字符串
+	 * 
+	 * @param hex
+	 *            16进制字符串
 	 * @return 字节数组
 	 */
-	private static byte[] hex2bytes(String hex) throws Exception{
+	private static byte[] hex2bytes(String hex) throws Exception {
 		if (hex.length() % 2 != 0)
 			hex = "0" + hex;
 		int len = hex.length() / 2;
@@ -285,10 +252,12 @@ public class Tea {
 		}
 		return val;
 	}
-	
+
 	/**
 	 * 把字符转为整形
-	 * @param a 字符
+	 * 
+	 * @param a
+	 *            字符
 	 * @return 整形
 	 */
 	private static int toInt(char a) {
@@ -300,5 +269,5 @@ public class Tea {
 			return a - 87;
 		return 0;
 	}
-    
+
 }
