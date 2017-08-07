@@ -5,8 +5,10 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
@@ -69,7 +71,8 @@ public class IhistorianUtil {
 		IhistorianResponse ires = new IhistorianResponse();
 		try {
 			Map<String, Object> map = new HashMap<>();
-			map.put("request", keys);
+			Set<String> new_keys = new HashSet<String>(keys);
+			map.put("request", new_keys);
 			List<NameValuePair> params = new ArrayList<NameValuePair>();
 			String jsonString = new ObjectMapper().writeValueAsString(map);
 			NameValuePair pvp = new BasicNameValuePair("parameters", Tea.encryptByBase64Tea(jsonString));
@@ -102,7 +105,8 @@ public class IhistorianUtil {
 		IhistorianResponse ires = new IhistorianResponse();
 		try {
 			Map<String, Object> map = new HashMap<>();
-			map.put("request", keys);
+			Set<String> new_keys = new HashSet<String>(keys);
+			map.put("request", new_keys);
 			List<NameValuePair> params = new ArrayList<NameValuePair>();
 			String jsonString = new ObjectMapper().writeValueAsString(map);
 			NameValuePair pvp = new BasicNameValuePair("parameters", Tea.encryptByBase64Tea(jsonString));

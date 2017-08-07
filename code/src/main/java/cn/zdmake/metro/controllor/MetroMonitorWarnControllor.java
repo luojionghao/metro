@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import com.ibm.icu.util.Calendar;
 import cn.zdmake.metro.base.aop.SysControllorLog;
@@ -54,9 +55,8 @@ public class MetroMonitorWarnControllor extends BaseController {
 	}
 
 	@RequestMapping("/to/warn-right")
-	public String toWarnRight() {
-		String intervalId = request.getParameter("intervalId");
-		String leftOrRight = request.getParameter("leftOrRight");
+	public String toWarnRight(@RequestParam("intervalId") Long intervalId,
+			@RequestParam("leftOrRight") String leftOrRight) {
 		modelMap.addAttribute("intervalId", intervalId);
 		modelMap.addAttribute("leftOrRight", leftOrRight);
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy年MM月dd日");
@@ -66,8 +66,8 @@ public class MetroMonitorWarnControllor extends BaseController {
 		String beginTime = sdf.format(cal.getTime());
 		modelMap.addAttribute("beginTime", beginTime);
 		modelMap.addAttribute("endTime", endTime);
-		PageResultSet<MetroLineIntervalWarning> params = warnService
-				.findLineIntervalWarningInfo(Long.parseLong(intervalId), leftOrRight, 0, 230);
+		PageResultSet<MetroLineIntervalWarning> params = warnService.findLineIntervalWarningInfo(intervalId,
+				leftOrRight, 0, 230);
 		modelMap.addAttribute("wps", params != null ? params.getList() : null);
 		return "/find-info/monitor_warn_right";
 	}
@@ -80,20 +80,18 @@ public class MetroMonitorWarnControllor extends BaseController {
 	@SysControllorLog(menu = "监测预警", opreate = "查询预警记录")
 	@RequestMapping("/find/warns")
 	@ResponseBody
-	public PageResultSet<MetroLineIntervalWarningRec> findWarnAll() {
-		String pageNum = request.getParameter("pageNum");
-		String pageSize = request.getParameter("pageSize");
-		String intervalId = request.getParameter("intervalId");
-		String leftOrRight = request.getParameter("leftOrRight");
+	public PageResultSet<MetroLineIntervalWarningRec> findWarnAll(@RequestParam("pageNum") int pageNum,
+			@RequestParam("pageSize") int pageSize, @RequestParam("intervalId") String intervalId,
+			@RequestParam("leftOrRight") String leftOrRight, @RequestParam("warnParam") String warnParam) {
+		
 		String beginTime = StringUtil.timeCnToEn(request.getParameter("beginTime"));
 		String endTime = StringUtil.timeCnToEnAddOne(request.getParameter("endTime"));
-		String warnParam = request.getParameter("warnParam");
-		PageResultSet<MetroLineIntervalWarningRec> res = warningRecService.findWarningRecs(
-				this.getCurrentUser().getId(), intervalId, leftOrRight, StringUtil.nullToInt(pageNum),
-				StringUtil.nullToInt(pageSize), beginTime, endTime, warnParam);
+		
+		PageResultSet<MetroLineIntervalWarningRec> res = warningRecService.findWarningRecs(getCurrentUser().getId(),
+				intervalId, leftOrRight, pageNum, pageSize, beginTime, endTime, warnParam);
 		if (res == null) {
 			res = new PageResultSet<MetroLineIntervalWarningRec>();
-			res.setPage(new Page(0, StringUtil.nullToInt(pageSize), StringUtil.nullToInt(pageNum)));
+			res.setPage(new Page(0, pageSize, pageNum));
 			res.setList(new ArrayList<MetroLineIntervalWarningRec>());
 		}
 		return res;

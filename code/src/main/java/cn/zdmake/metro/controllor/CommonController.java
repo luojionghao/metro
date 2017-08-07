@@ -14,6 +14,7 @@ import jxl.common.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import cn.zdmake.metro.base.controller.BaseController;
@@ -52,13 +53,14 @@ public class CommonController extends BaseController {
 	/**
 	 * 文件下载
 	 * 
+	 * @param filename
+	 *            下载文件名
 	 * @return
 	 */
 	@RequestMapping("/file-download")
-	public String fileDownload() {
+	public String fileDownload(@RequestParam("filename") String filename) {
 		// CommonResponse r = new CommonResponse();
 		try {
-			String filename = request.getParameter("filename"); // 上传的实际文件名，包含18位前缀
 			String filepath = ConfigProperties.getValueByKey("FILE_UPLOAD_PATH") + "/" + filename;
 			File file = new File(new String(filepath.getBytes("utf-8"), "utf-8"));
 			if (!file.exists()) {

@@ -70,10 +70,8 @@ public class ProjectInfoGuidedataController extends BaseController {
 	 * @return
 	 */
 	@RequestMapping("/lrinfo")
-	public String lrinfo() {
-		String intervalId = request.getParameter("intervalId");
-		String leftOrRight = request.getParameter("leftOrRight");
-		String desc = request.getParameter("desc");
+	public String lrinfo(@RequestParam("intervalId") String intervalId, @RequestParam("leftOrRight") String leftOrRight,
+			@RequestParam("desc") String desc) {
 		/*
 		 * PageResultSet<MetroDictionary> dicSet =
 		 * dictionaryService.findMetroDictionaryInfo(0, 1000);
@@ -82,6 +80,7 @@ public class ProjectInfoGuidedataController extends BaseController {
 		request.setAttribute("intervalId", intervalId);
 		request.setAttribute("leftOrRight", leftOrRight);
 		request.setAttribute("desc", desc);
+
 		return "/project-info/item_guide_right";
 	}
 
@@ -91,14 +90,13 @@ public class ProjectInfoGuidedataController extends BaseController {
 	@SysControllorLog(menu = "导向数据管理", opreate = "导出导向数据")
 	@RequestMapping(value = "/lrinfo/export", method = RequestMethod.POST)
 	@ResponseBody
-	public CommonResponse exportLrinfo() {
+	public CommonResponse exportLrinfo(@RequestParam("intervalId") Long intervalId,
+			@RequestParam("leftOrRight") String leftOrRight, @RequestParam("desc") String desc) {
+
 		CommonResponse commonResponse = new CommonResponse();
 		try {
-			String intervalId = request.getParameter("intervalId");
-			String leftOrRight = request.getParameter("leftOrRight");
-			String desc = request.getParameter("desc");
-			List<MetroLineIntervalData> datas = lineIntervalDataService
-					.findAllByIntervalIdAndLr(Long.parseLong(intervalId), leftOrRight);
+			List<MetroLineIntervalData> datas = lineIntervalDataService.findAllByIntervalIdAndLr(intervalId,
+					leftOrRight);
 			String excelFileName = writeExcel(datas, desc);
 			if (excelFileName != null) { // 成功
 				commonResponse.setCode(Constants.CODE_SUCCESS);
@@ -171,13 +169,12 @@ public class ProjectInfoGuidedataController extends BaseController {
 	 */
 	@RequestMapping("/lrinfo/find")
 	@ResponseBody
-	public PageResultSet<MetroLineIntervalData> findLrinfo() {
-		String intervalId = request.getParameter("intervalId");
-		int pageNum = StringUtil.nullToInt(request.getParameter("pageNum"));
-		int pageSize = StringUtil.nullToInt(request.getParameter("pageSize"));
-		String leftOrRight = request.getParameter("leftOrRight");
-		PageResultSet<MetroLineIntervalData> resultSet = lineIntervalDataService
-				.findLineIntervalDataInfo(Long.parseLong(intervalId), leftOrRight, pageNum, pageSize);
+	public PageResultSet<MetroLineIntervalData> findLrinfo(@RequestParam("intervalId") Long intervalId,
+			@RequestParam("pageNum") int pageNum, @RequestParam("pageSize") int pageSize,
+			@RequestParam("leftOrRight") String leftOrRight) {
+
+		PageResultSet<MetroLineIntervalData> resultSet = lineIntervalDataService.findLineIntervalDataInfo(intervalId,
+				leftOrRight, pageNum, pageSize);
 		return resultSet;
 	}
 

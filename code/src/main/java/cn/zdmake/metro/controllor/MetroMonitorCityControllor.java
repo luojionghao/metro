@@ -14,7 +14,6 @@ import cn.zdmake.metro.base.controller.BaseController;
 import cn.zdmake.metro.base.model.CommonResponse;
 import cn.zdmake.metro.base.page.Page;
 import cn.zdmake.metro.base.page.PageResultSet;
-import cn.zdmake.metro.base.utils.GsonUtils;
 import cn.zdmake.metro.base.utils.StringUtil;
 import cn.zdmake.metro.model.*;
 import cn.zdmake.metro.service.*;
@@ -117,8 +116,7 @@ public class MetroMonitorCityControllor extends BaseController {
 	 * @return
 	 */
 	@RequestMapping("/to/city/index")
-	public String cityMain() {
-		String cityId = request.getParameter("cityId");
+	public String cityMain(@RequestParam("cityId") String cityId) {
 		modelMap.addAttribute("cityId", cityId);
 		Map<String, String> map = infoCityService.findCountMechineDatas(this.getCurrentUser().getId(), null);
 		if (map != null) {
@@ -144,16 +142,14 @@ public class MetroMonitorCityControllor extends BaseController {
 	 */
 	@RequestMapping("/find/city/datas")
 	@ResponseBody
-	public PageResultSet<MonitorViewData> findMonitorCityAll() throws IOException {
-		String pageNum = request.getParameter("pageNum");
-		String pageSize = request.getParameter("pageSize");
-		String cityId = request.getParameter("cityId");
-		String buildStatus = request.getParameter("buildStatus");
-		PageResultSet<MonitorViewData> mvds = infoCityService.findMonitorInfoCityData(Long.parseLong(cityId), null,
-				Integer.parseInt(buildStatus), Integer.parseInt(pageNum), Integer.parseInt(pageSize));
+	public PageResultSet<MonitorViewData> findMonitorCityAll(@RequestParam("cityId") Long cityId,
+			@RequestParam("buildStatus") Integer buildStatus, @RequestParam("pageNum") int pageNum,
+			@RequestParam("pageSize") int pageSize) throws IOException {
+		PageResultSet<MonitorViewData> mvds = infoCityService.findMonitorInfoCityData(cityId, null, buildStatus,
+				pageNum, pageSize);
 		if (mvds == null) {
 			mvds = new PageResultSet<MonitorViewData>();
-			mvds.setPage(new Page(0, StringUtil.nullToInt(pageSize), StringUtil.nullToInt(pageNum)));
+			mvds.setPage(new Page(0, pageSize, pageNum));
 			mvds.setList(new ArrayList<MonitorViewData>());
 		}
 		return mvds;
@@ -165,13 +161,11 @@ public class MetroMonitorCityControllor extends BaseController {
 	 * @return
 	 */
 	@RequestMapping("/to/line/index")
-	public String lineMain() {
-		String lineId = request.getParameter("lineId");
+	public String lineMain(@RequestParam("lineId") Long lineId) {
 		modelMap.addAttribute("lineId", lineId);
-		MetroLine line = lineService.findObjById(Long.parseLong(lineId));
+		MetroLine line = lineService.findObjById(lineId);
 		modelMap.addAttribute("lineUrl", line.getProjectPdfUrl());
-		Map<String, String> map = infoCityService.findCountMechineDatas(this.getCurrentUser().getId(),
-				Long.parseLong(lineId));
+		Map<String, String> map = infoCityService.findCountMechineDatas(this.getCurrentUser().getId(), lineId);
 		if (map != null) {
 			int total0 = StringUtil.nullToInt(map.get("total0"));
 			int total1 = StringUtil.nullToInt(map.get("total1"));
@@ -195,16 +189,14 @@ public class MetroMonitorCityControllor extends BaseController {
 	 */
 	@RequestMapping("/find/line/datas")
 	@ResponseBody
-	public PageResultSet<MonitorViewData> findMonitorLineAll() throws IOException {
-		String pageNum = request.getParameter("pageNum");
-		String pageSize = request.getParameter("pageSize");
-		String lineId = request.getParameter("lineId");
-		String buildStatus = request.getParameter("buildStatus");
-		PageResultSet<MonitorViewData> mvds = infoCityService.findMonitorInfoCityData(null, Long.parseLong(lineId),
-				Integer.parseInt(buildStatus), Integer.parseInt(pageNum), Integer.parseInt(pageSize));
+	public PageResultSet<MonitorViewData> findMonitorLineAll(@RequestParam("lineId") Long lineId,
+			@RequestParam("buildStatus") int buildStatus, @RequestParam("pageNum") int pageNum,
+			@RequestParam("pageSize") int pageSize) throws IOException {
+		PageResultSet<MonitorViewData> mvds = infoCityService.findMonitorInfoCityData(null, lineId, buildStatus,
+				pageNum, pageSize);
 		if (mvds == null) {
 			mvds = new PageResultSet<MonitorViewData>();
-			mvds.setPage(new Page(0, StringUtil.nullToInt(pageSize), StringUtil.nullToInt(pageNum)));
+			mvds.setPage(new Page(0, pageSize, pageNum));
 			mvds.setList(new ArrayList<MonitorViewData>());
 		}
 		return mvds;
@@ -216,13 +208,12 @@ public class MetroMonitorCityControllor extends BaseController {
 	 * @return
 	 */
 	@RequestMapping("/to/area/index")
-	public String areaMain() {
-		String intervalId = request.getParameter("intervalId");
+	public String areaMain(@RequestParam("intervalId") Long intervalId) {
 		modelMap.addAttribute("intervalId", intervalId);
-		MetroLineInterval interval = intervalService.findObjById(Long.parseLong(intervalId));
+		MetroLineInterval interval = intervalService.findObjById(intervalId);
 		modelMap.addAttribute("intervalUrl", interval.getProjectPdfUrl());
 		modelMap.addAttribute("riskPdfUrl", interval.getRiskPdfUrl());
-		List<MetroLineIntervalSp> sps = spService.findLineIntervalSps(Long.parseLong(intervalId));
+		List<MetroLineIntervalSp> sps = spService.findLineIntervalSps(intervalId);
 		modelMap.addAttribute("sps", sps);
 		return "/find-info/info_monitor_area";
 	}
@@ -233,13 +224,10 @@ public class MetroMonitorCityControllor extends BaseController {
 	 * @return
 	 */
 	@RequestMapping("/to/area/project")
-	public String projectProccse() {
-		String intervalId = request.getParameter("intervalId");
-		int type = Integer.parseInt(request.getParameter("type"));
-		int goNumAll = StringUtil.nullToInt(request.getParameter("goNum"));
-		String pingLorR = StringUtil.nullToString(request.getParameter("pingLorR"));
-		MetroLineInterval interval = intervalService.findObjById(Long.parseLong(intervalId));
-		MetroLineIntervalPp pp = lineIntervalPpService.findByIntervalId(Long.parseLong(intervalId));
+	public String projectProccse(@RequestParam("intervalId") Long intervalId, @RequestParam("type") int type,
+			@RequestParam("goNumA") int goNumAll, @RequestParam("pingLorR") String pingLorR) {
+		MetroLineInterval interval = intervalService.findObjById(intervalId);
+		MetroLineIntervalPp pp = lineIntervalPpService.findByIntervalId(intervalId);
 		modelMap.addAttribute("pp", pp);
 
 		List<MetroLineIntervalLr> lrList = interval.getIntervalLrList();
@@ -314,8 +302,7 @@ public class MetroMonitorCityControllor extends BaseController {
 		String url = "";
 		if (type == 1) {
 			// 获取沉降点数据
-			List<MetroLineIntervalSp> metroLineIntervalSpList = spService
-					.findLineIntervalSps(Long.parseLong(intervalId));
+			List<MetroLineIntervalSp> metroLineIntervalSpList = spService.findLineIntervalSps(intervalId);
 			modelMap.addAttribute("ntervalSpList", metroLineIntervalSpList);
 			if (pingLorR.equals("l")) {
 				modelMap.addAttribute("pingLorR", pingLorR);
@@ -418,9 +405,10 @@ public class MetroMonitorCityControllor extends BaseController {
 	@SysControllorLog(menu = "盾构远程监控", opreate = "风险组段划分文件上传")
 	@RequestMapping(value = "/risk-pdf/upload", method = RequestMethod.POST)
 	@ResponseBody
-	public String uploadRiskPdf(@RequestParam("iId") String intervalId,
+	public Object uploadRiskPdf(@RequestParam("iId") Long intervalId,
 			@RequestParam(value = "file", required = false) MultipartFile file) {
 		// TODO 输出格式需要统一
+		// ?? 输出类型
 		// CommonResponse r = new CommonResponse();
 		try {
 			CommonResponse uploadResult = commonService.fileUpload(file);
@@ -429,7 +417,7 @@ public class MetroMonitorCityControllor extends BaseController {
 				// return GsonUtils.toJson(uploadResult);
 			}
 			String pdfUrl = (String) uploadResult.getResult();
-			boolean result = intervalService.editRiskPdfUrl(Long.parseLong(intervalId), pdfUrl);
+			boolean result = intervalService.editRiskPdfUrl(intervalId, pdfUrl);
 			if (result) { // 入库成功
 				/*
 				 * r.setCode(Constants.CODE_SUCCESS); r.setResult("上传成功");
@@ -448,11 +436,12 @@ public class MetroMonitorCityControllor extends BaseController {
 			 * r.setCode(Constants.CODE_FAIL); r.setResult("文件上传异常");
 			 */
 		}
-		MetroLineInterval metroline = intervalService.findObjById(Long.parseLong(intervalId));
+		MetroLineInterval metroline = intervalService.findObjById(intervalId);
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("riskPdfUrl", metroline.getRiskPdfUrl());
-		map.put("intervalId", String.valueOf(metroline.getId()));
-		return GsonUtils.toJson(map);
+		map.put("intervalId", metroline.getId());
+		
+		return map;
 	}
 
 	/**
@@ -461,11 +450,10 @@ public class MetroMonitorCityControllor extends BaseController {
 	@SysControllorLog(menu = "盾构远程监控", opreate = "风险组段划分文件删除")
 	@RequestMapping(value = "/risk-pdf/delete", method = RequestMethod.POST)
 	@ResponseBody
-	public CommonResponse deleteRiskPdf() {
+	public CommonResponse deleteRiskPdf(@RequestParam("intervalId") Long intervalId) {
 		CommonResponse commonResponse = new CommonResponse();
 		try {
-			String intervalId = request.getParameter("intervalId");
-			boolean result = intervalService.editRiskPdfUrl(Long.parseLong(intervalId), null);
+			boolean result = intervalService.editRiskPdfUrl(intervalId, null);
 			if (result) { // 删除成功
 				commonResponse.setCode(Constants.CODE_SUCCESS);
 				commonResponse.setResult("删除成功");
@@ -488,16 +476,14 @@ public class MetroMonitorCityControllor extends BaseController {
 	 * @return
 	 */
 	@RequestMapping("/to/lr/index")
-	public String lrMain() {
-		String intervalId = request.getParameter("intervalId");
-		String leftOrRight = request.getParameter("leftOrRight");
-		MetroLineInterval interval = intervalService.findObjById(Long.parseLong(intervalId));
+	public String lrMain(@RequestParam("intervalId") Long intervalId, @RequestParam("leftOrRight") String leftOrRight) {
+		MetroLineInterval interval = intervalService.findObjById(intervalId);
 		for (MetroLineIntervalLr lineIntervalLr : interval.getIntervalLrList()) {
 			if (lineIntervalLr.getLeftOrRight().equals(leftOrRight)) {
 				modelMap.addAttribute("machineType", lineIntervalLr.getMachineType());
 			}
 		}
-		int b = infoCityService.findCurrRingNum(intervalId, leftOrRight);
+		int b = infoCityService.findCurrRingNum(intervalId.toString(), leftOrRight);
 		try {
 			if (b - 5 >= 0) {
 				request.getSession().setAttribute("b_curr_ring", b - 5);
@@ -520,11 +506,10 @@ public class MetroMonitorCityControllor extends BaseController {
 	 * @return
 	 */
 	@RequestMapping("/to/lr/knife")
-	public ModelAndView lrMainToKnife() {
+	public ModelAndView lrMainToKnife(@RequestParam("intervalId") Long intervalId,
+			@RequestParam("leftOrRight") String leftOrRight) {
 		JModelAndView mv = new JModelAndView("/find-info/knife", request, response);
-		String intervalId = request.getParameter("intervalId");
-		String leftOrRight = request.getParameter("leftOrRight");
-		Map<String, Object> map = infoCityService.findIntervalLrDaoPanDatas(Long.parseLong(intervalId), leftOrRight);
+		Map<String, Object> map = infoCityService.findIntervalLrDaoPanDatas(intervalId, leftOrRight);
 		try {
 			request.getSession().setAttribute("e_curr_ring", map.get(map.get("head") + "A0001.F_CV"));
 			Integer b = 0;
@@ -538,7 +523,7 @@ public class MetroMonitorCityControllor extends BaseController {
 
 		}
 
-		List<MetroPhoto> phs = photoService.findMetroPhotosByParams(Long.parseLong(intervalId), leftOrRight);
+		List<MetroPhoto> phs = photoService.findMetroPhotosByParams(intervalId, leftOrRight);
 		if (phs != null && phs.size() > 0) {
 			for (MetroPhoto mp : phs) {
 				if (mp.getPhotoType() == 1) {
@@ -564,11 +549,10 @@ public class MetroMonitorCityControllor extends BaseController {
 	 * @return
 	 */
 	@RequestMapping("/to/lr/sprial")
-	public ModelAndView lrMainToSprial() {
+	public ModelAndView lrMainToSprial(@RequestParam("intervalId") Long intervalId,
+			@RequestParam("leftOrRight") String leftOrRight) {
 		JModelAndView mv = new JModelAndView("/find-info/sprial", request, response);
-		String intervalId = request.getParameter("intervalId");
-		String leftOrRight = request.getParameter("leftOrRight");
-		Map<String, Object> map = infoCityService.findIntervalLrDaoPanDatas(Long.parseLong(intervalId), leftOrRight);
+		Map<String, Object> map = infoCityService.findIntervalLrDaoPanDatas(intervalId, leftOrRight);
 		try {
 			request.getSession().setAttribute("e_curr_ring", map.get(map.get("head") + "A0001.F_CV"));
 			Integer b = 0;
@@ -582,7 +566,7 @@ public class MetroMonitorCityControllor extends BaseController {
 
 		}
 
-		List<MetroPhoto> phs = photoService.findMetroPhotosByParams(Long.parseLong(intervalId), leftOrRight);
+		List<MetroPhoto> phs = photoService.findMetroPhotosByParams(intervalId, leftOrRight);
 		if (phs != null && phs.size() > 0) {
 			for (MetroPhoto mp : phs) {
 				if (mp.getPhotoType() == 1 || mp.getPhotoType() == 3) {
@@ -608,11 +592,10 @@ public class MetroMonitorCityControllor extends BaseController {
 	 * @return
 	 */
 	@RequestMapping("/to/lr/slurry")
-	public ModelAndView lrMainToslurry() {
+	public ModelAndView lrMainToslurry(@RequestParam("intervalId") Long intervalId,
+			@RequestParam("leftOrRight") String leftOrRight) {
 		JModelAndView mv = new JModelAndView("/find-info/slurry", request, response);
-		String intervalId = request.getParameter("intervalId");
-		String leftOrRight = request.getParameter("leftOrRight");
-		Map<String, Object> map = infoCityService.findIntervalLrDaoPanDatas(Long.parseLong(intervalId), leftOrRight);
+		Map<String, Object> map = infoCityService.findIntervalLrDaoPanDatas(intervalId, leftOrRight);
 		try {
 			request.getSession().setAttribute("e_curr_ring", map.get(map.get("head") + "A0001.F_CV"));
 			Integer b = 0;
@@ -626,7 +609,7 @@ public class MetroMonitorCityControllor extends BaseController {
 
 		}
 
-		List<MetroPhoto> phs = photoService.findMetroPhotosByParams(Long.parseLong(intervalId), leftOrRight);
+		List<MetroPhoto> phs = photoService.findMetroPhotosByParams(intervalId, leftOrRight);
 		if (phs != null && phs.size() > 0) {
 			for (MetroPhoto mp : phs) {
 				if (mp.getPhotoType() == 3) {
@@ -652,11 +635,10 @@ public class MetroMonitorCityControllor extends BaseController {
 	 * @return
 	 */
 	@RequestMapping("/to/lr/guide")
-	public ModelAndView lrMainToGuide() {
+	public ModelAndView lrMainToGuide(@RequestParam("intervalId") Long intervalId,
+			@RequestParam("leftOrRight") String leftOrRight) {
 		JModelAndView mv = new JModelAndView("/find-info/guide", request, response);
-		String intervalId = request.getParameter("intervalId");
-		String leftOrRight = request.getParameter("leftOrRight");
-		Map<String, Object> map = infoCityService.findIntervalLrDaoPanDatas(Long.parseLong(intervalId), leftOrRight);
+		Map<String, Object> map = infoCityService.findIntervalLrDaoPanDatas(intervalId, leftOrRight);
 		try {
 			request.getSession().setAttribute("e_curr_ring", map.get(map.get("head") + "A0001.F_CV"));
 			Integer b = 0;
@@ -670,7 +652,7 @@ public class MetroMonitorCityControllor extends BaseController {
 
 		}
 
-		List<MetroPhoto> phs = photoService.findMetroPhotosByParams(Long.parseLong(intervalId), leftOrRight);
+		List<MetroPhoto> phs = photoService.findMetroPhotosByParams(intervalId, leftOrRight);
 		if (phs != null && phs.size() > 0) {
 			for (MetroPhoto mp : phs) {
 				if (mp.getPhotoType() == 1) {
@@ -697,20 +679,14 @@ public class MetroMonitorCityControllor extends BaseController {
 	 */
 	@RequestMapping("/find/lr/monitor/datas/now")
 	@ResponseBody
-	public Map<String, Object> getLrMonitorDatasNow() {
-		String intervalId = request.getParameter("intervalId");
-		String leftOrRight = request.getParameter("leftOrRight");
-		Long iid = 0l;
-		try {
-			iid = Long.parseLong(intervalId);
-		} catch (Exception e) {
-			return null;
-		}
-		Map<String, Object> map = infoCityService.findIntervalLrDaoPanDatas(iid, leftOrRight);
+	public Map<String, Object> getLrMonitorDatasNow(@RequestParam("intervalId") Long intervalId,
+			@RequestParam("leftOrRight") String leftOrRight) {
+		Map<String, Object> map = infoCityService.findIntervalLrDaoPanDatas(intervalId, leftOrRight);
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		map.put("nowTime", sdf.format(Calendar.getInstance().getTime()));
 		map.put("sufix", ".F_CV");
-		List<MetroLineIntervalWarningRec> res = warningRecService.findLastWarningRecsIntervalId(iid, leftOrRight, null);
+		List<MetroLineIntervalWarningRec> res = warningRecService.findLastWarningRecsIntervalId(intervalId, leftOrRight,
+				null);
 		map.put("res", res);
 		return map;
 	}
@@ -722,16 +698,9 @@ public class MetroMonitorCityControllor extends BaseController {
 	 */
 	@RequestMapping("/find/lr/monitor/datas")
 	@ResponseBody
-	public Map<String, Object> getLrMonitorDatas() {
-		String intervalId = request.getParameter("intervalId");
-		String leftOrRight = request.getParameter("leftOrRight");
-		Long iid = 0l;
-		try {
-			iid = Long.parseLong(intervalId);
-		} catch (Exception e) {
-			return null;
-		}
-		Map<String, Object> map = infoCityService.findIntervalLrDaoxDatas(iid, leftOrRight);
+	public Map<String, Object> getLrMonitorDatas(@RequestParam("intervalId") Long intervalId,
+			@RequestParam("leftOrRight") String leftOrRight) {
+		Map<String, Object> map = infoCityService.findIntervalLrDaoxDatas(intervalId, leftOrRight);
 		return map;
 	}
 
@@ -742,16 +711,9 @@ public class MetroMonitorCityControllor extends BaseController {
 	 */
 	@RequestMapping("/find/all/dic/datas")
 	@ResponseBody
-	public PageResultSet<MonitorLrAlldicView> findMonitorIntervalLrAll() {
-		String intervalId = request.getParameter("intervalId");
-		String leftOrRight = request.getParameter("leftOrRight");
-		Long iid = 0l;
-		try {
-			iid = Long.parseLong(intervalId);
-		} catch (Exception e) {
-			return null;
-		}
-		PageResultSet<MonitorLrAlldicView> mvds = infoCityService.findMonitorIntervalLrDics(iid, leftOrRight);
+	public PageResultSet<MonitorLrAlldicView> findMonitorIntervalLrAll(@RequestParam("intervalId") Long intervalId,
+			@RequestParam("leftOrRight") String leftOrRight) {
+		PageResultSet<MonitorLrAlldicView> mvds = infoCityService.findMonitorIntervalLrDics(intervalId, leftOrRight);
 		if (mvds == null) {
 			mvds = new PageResultSet<MonitorLrAlldicView>();
 			mvds.setPage(new Page(0, 100, 1));
@@ -766,9 +728,8 @@ public class MetroMonitorCityControllor extends BaseController {
 	 * @return
 	 */
 	@RequestMapping("/to/lr/static/index")
-	public String lrStaticMain() {
-		String intervalId = request.getParameter("intervalId");
-		String leftOrRight = request.getParameter("leftOrRight");
+	public String lrStaticMain(@RequestParam("intervalId") Long intervalId,
+			@RequestParam("leftOrRight") String leftOrRight) {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy年MM月dd日");
 		Calendar cal = Calendar.getInstance();
 		String endTime = sdf.format(cal.getTime());
@@ -788,12 +749,10 @@ public class MetroMonitorCityControllor extends BaseController {
 	 */
 	@RequestMapping("/find/static/tab1")
 	@ResponseBody
-	public Map<String, Object> getStaticTab1() {
-		String intervalId = request.getParameter("intervalId");
-		String leftOrRight = request.getParameter("leftOrRight");
-		String beginRing = request.getParameter("beginRing");
-		String endRing = request.getParameter("endRing");
-		String paramName = request.getParameter("paramName");
+	public Map<String, Object> getStaticTab1(@RequestParam("intervalId") String intervalId,
+			@RequestParam("leftOrRight") String leftOrRight, @RequestParam("beginRing") String beginRing,
+			@RequestParam("endRing") String endRing, @RequestParam("paramName") String paramName) {
+
 		List<List<Object>> list = infoCityService.findMonitorStaticTab1(intervalId, leftOrRight, beginRing, endRing,
 				paramName);
 		Map<String, Object> map = new HashMap<String, Object>();
@@ -808,11 +767,10 @@ public class MetroMonitorCityControllor extends BaseController {
 	 */
 	@RequestMapping("/find/static/tab2")
 	@ResponseBody
-	public Map<String, Object> getStaticTab2() {
-		String intervalId = request.getParameter("intervalId");
-		String leftOrRight = request.getParameter("leftOrRight");
-		String beginRing = request.getParameter("beginRing");
-		String endRing = request.getParameter("endRing");
+	public Map<String, Object> getStaticTab2(@RequestParam("intervalId") String intervalId,
+			@RequestParam("leftOrRight") String leftOrRight, @RequestParam("beginRing") String beginRing,
+			@RequestParam("endRing") String endRing) {
+
 		List<List<Object>> result = infoCityService.findMonitorStaticTab2(intervalId, leftOrRight, beginRing, endRing);
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("list", result);
@@ -826,11 +784,10 @@ public class MetroMonitorCityControllor extends BaseController {
 	 */
 	@RequestMapping("/find/static/tab3")
 	@ResponseBody
-	public Map<String, Object> getStaticTab3() {
-		String intervalId = request.getParameter("intervalId");
-		String leftOrRight = request.getParameter("leftOrRight");
-		String beginDate = StringUtil.timeCnToEn(request.getParameter("beginDate"));
-		String endDate = StringUtil.timeCnToEn(request.getParameter("endDate"));
+	public Map<String, Object> getStaticTab3(@RequestParam("intervalId") String intervalId,
+			@RequestParam("leftOrRight") String leftOrRight, @RequestParam("beginDate") String beginDate,
+			@RequestParam("endDate") String endDate) {
+
 		List<List<Object>> result = infoCityService.findMonitorStaticTab3(intervalId, leftOrRight, beginDate, endDate);
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("list", result);
@@ -844,16 +801,16 @@ public class MetroMonitorCityControllor extends BaseController {
 	 */
 	@RequestMapping("/find/static/tab4")
 	@ResponseBody
-	public PageResultSet<MonitorIntervalLrStaticView> getStaticTab4() {
-		String intervalId = request.getParameter("intervalId");
-		String leftOrRight = request.getParameter("leftOrRight");
-		String pageNum = request.getParameter("pageNum");
-		String pageSize = request.getParameter("pageSize");
+	public PageResultSet<MonitorIntervalLrStaticView> getStaticTab4(@RequestParam("intervalId") String intervalId,
+			@RequestParam("leftOrRight") String leftOrRight, @RequestParam("pageNum") String pageNum,
+			@RequestParam("pageSize") String pageSize, @RequestParam("excelType") String excelType) {
+
 		String beginTime = StringUtil.timeCnToEn(request.getParameter("beginTime"));
-		String endTime = StringUtil.timeCnToEn(request.getParameter("endTime"));
-		String excelType = request.getParameter("excelType");
+	String endTime = StringUtil.timeCnToEn(request.getParameter("endTime"));
+
 		PageResultSet<MonitorIntervalLrStaticView> mvds = infoCityService.findMonitorStaticTab4(intervalId, leftOrRight,
 				pageNum, pageSize, beginTime, endTime, excelType);
+
 		if (mvds == null || mvds.getList() == null || mvds.getList().size() <= 0) {
 			mvds = new PageResultSet<MonitorIntervalLrStaticView>();
 			mvds.setPage(new Page(0, 10, 1));
@@ -864,16 +821,16 @@ public class MetroMonitorCityControllor extends BaseController {
 
 	@RequestMapping("/find/static/tab4d")
 	@ResponseBody
-	public CommonResponse getStaticTab4d() {
-		String intervalId = request.getParameter("intervalId");
-		String leftOrRight = request.getParameter("leftOrRight");
-		String pageNum = request.getParameter("pageNum");
-		String pageSize = request.getParameter("pageSize");
+	public CommonResponse getStaticTab4d(@RequestParam("intervalId") String intervalId,
+			@RequestParam("leftOrRight") String leftOrRight, @RequestParam("pageNum") String pageNum,
+			@RequestParam("pageSize") String pageSize, @RequestParam("excelType") String excelType) {
+
 		String beginTime = StringUtil.timeCnToEn(request.getParameter("beginTime"));
 		String endTime = StringUtil.timeCnToEn(request.getParameter("endTime"));
-		String excelType = request.getParameter("excelType");
+
 		PageResultSet<MonitorIntervalLrStaticView> mvds = infoCityService.findMonitorStaticTab4(intervalId, leftOrRight,
 				pageNum, pageSize, beginTime, endTime, excelType);
+
 		CommonResponse commonResponse = new CommonResponse();
 		try {
 			String excelFileName = writeExcel(mvds.getList(), excelType);
@@ -893,18 +850,18 @@ public class MetroMonitorCityControllor extends BaseController {
 
 	@RequestMapping("/find/static/tab5")
 	@ResponseBody
-	public MonitorIntervalLrStaticsView getStaticTab5() {
-		String intervalId = request.getParameter("intervalId");
-		String leftOrRight = request.getParameter("leftOrRight");
+	public MonitorIntervalLrStaticsView getStaticTab5(@RequestParam("intervalId") String intervalId,
+			@RequestParam("leftOrRight") String leftOrRight, @RequestParam("beginRing") String beginRing,
+			@RequestParam("endRing") String endRing, @RequestParam("model") String model,
+			@RequestParam("type") String type) {
+
 		String beginTime = StringUtil.timeCnToEn(request.getParameter("beginTime"));
 		String endTime = StringUtil.timeCnToEn(request.getParameter("endTime"));
-		String beginRing = request.getParameter("beginRing");
-		String endRing = request.getParameter("endRing");
-		String model = request.getParameter("model");
-		String type = request.getParameter("type");
+
 		String[] ks = request.getParameter("ks") != null ? request.getParameter("ks").split(",") : null;
 		String[] kns = request.getParameter("kns") != null ? request.getParameter("kns").split(",") : null;
 		String[] indxs = request.getParameter("indxs") != null ? request.getParameter("indxs").split(",") : null;
+
 		MonitorIntervalLrStaticsView misv = infoCityService.findMonitorStaticTab5(intervalId, leftOrRight,
 				StringUtil.nullToInt(model), type, beginTime, endTime, StringUtil.nullToInt(beginRing),
 				StringUtil.nullToInt(endRing), ks, kns, indxs);

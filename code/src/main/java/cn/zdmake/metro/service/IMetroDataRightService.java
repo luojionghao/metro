@@ -15,7 +15,7 @@ public interface IMetroDataRightService {
 	 * @param userId
 	 * @return
 	 */
-	List<MetroUserDataRel> findUserDataRightByUserId(String userId);
+	List<MetroUserDataRel> findUserDataRightByUserId(Long userId);
 	
 	/**
 	 * 保存用户数据权限信息
@@ -23,6 +23,6 @@ public interface IMetroDataRightService {
 	 * @param dataRight
 	 * @return
 	 */
-	boolean saveDataRightInfo(String userId, String dataRight);
+	boolean saveDataRightInfo(Long userId, String dataRight);
 	
 }

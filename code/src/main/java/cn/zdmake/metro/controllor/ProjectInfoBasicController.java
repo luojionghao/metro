@@ -83,9 +83,8 @@ public class ProjectInfoBasicController extends BaseController {
 	 * @return
 	 */
 	@RequestMapping("/cityinfo")
-	public String cityinfo() {
-		String cityId = request.getParameter("cityId");
-		MetroCity city = cityService.findObjById(Long.parseLong(cityId));
+	public String cityinfo(@RequestParam("cityId") Long cityId) {
+		MetroCity city = cityService.findObjById(cityId);
 		request.setAttribute("projectPdfUrl", city.getProjectPdfUrl());
 		request.setAttribute("cityId", String.valueOf(city.getId()));
 		return "/project-info/item_generalize_city";
@@ -120,6 +119,9 @@ public class ProjectInfoBasicController extends BaseController {
 
 	/**
 	 * 保存城市线路区间信息
+	 * 
+	 * @param interval
+	 * @return
 	 */
 	@SysControllorLog(menu = "项目概况管理", opreate = "新建区间")
 	@RequestMapping(value = "/intervalinfo/save", method = RequestMethod.POST)
@@ -227,33 +229,25 @@ public class ProjectInfoBasicController extends BaseController {
 	@SysControllorLog(menu = "项目概况管理", opreate = "区间左右线编辑")
 	@RequestMapping(value = "/interval-lrinfo/save-or-update", method = RequestMethod.POST)
 	@ResponseBody
-	public CommonResponse updateLineIntervalLrInfo() {
+	public CommonResponse updateLineIntervalLrInfo(@RequestParam("saveOrUpdate") String saveOrUpdate,
+			@RequestParam("intervalId") Long intervalId, @RequestParam("leftOrRight") String leftOrRight,
+			@RequestParam("intervalColor") String intervalColor, @RequestParam("mapXy") String mapXy,
+			@RequestParam("status") int status, @RequestParam("buildStatus") int buildStatus,
+			@RequestParam("buildDate") String buildDate, @RequestParam("throughDate") String throughDate,
+			@RequestParam("ringNum") int ringNum, @RequestParam("machineNo") String machineNo,
+			@RequestParam("machineCompany") String machineCompany, @RequestParam("machineType") String machineType,
+			@RequestParam("machineProductDate") String machineProductDate,
+			@RequestParam("machineContractor") String machineContractor,
+			@RequestParam("machineReviewDate") String machineReviewDate, @RequestParam("remark") String remark,
+			@RequestParam("cutterPhotoId") Long cutterPhotoId, @RequestParam("slurryPhotoId") Long slurryPhotoId,
+			@RequestParam("screwPhotoId") Long screwPhotoId) {
+
 		CommonResponse commonResponse = new CommonResponse();
 		try {
-			String saveOrUpdate = request.getParameter("saveOrUpdate");
-			String intervalId = request.getParameter("intervalId");
-			String leftOrRight = request.getParameter("leftOrRight");
-			String intervalColor = request.getParameter("intervalColor");
-			String mapXy = request.getParameter("mapXy");
-			String status = request.getParameter("status");
-			String buildStatus = request.getParameter("buildStatus");
-			String buildDate = request.getParameter("buildDate");
-			String throughDate = request.getParameter("throughDate");
-			String ringNum = request.getParameter("ringNum");
-			String machineNo = request.getParameter("machineNo");
-			String machineCompany = request.getParameter("machineCompany");
-			String machineType = request.getParameter("machineType");
-			String machineProductDate = request.getParameter("machineProductDate");
-			String machineContractor = request.getParameter("machineContractor");
-			String machineReviewDate = request.getParameter("machineReviewDate");
-			String remark = request.getParameter("remark");
-			String cutterPhotoId = request.getParameter("cutterPhotoId");
-			String slurryPhotoId = request.getParameter("slurryPhotoId");
-			String screwPhotoId = request.getParameter("screwPhotoId");
 			DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
 			MetroLineIntervalLr intervalLr = new MetroLineIntervalLr();
 			if (CommonUtils.isNotNull(intervalId)) {
-				intervalLr.setIntervalId(Long.parseLong(intervalId));
+				intervalLr.setIntervalId(intervalId);
 			}
 			if (CommonUtils.isNotNull(leftOrRight)) {
 				intervalLr.setLeftOrRight(leftOrRight);
@@ -270,10 +264,10 @@ public class ProjectInfoBasicController extends BaseController {
 				}
 			}
 			if (CommonUtils.isNotNull(status)) {
-				intervalLr.setStatus(Integer.parseInt(status));
+				intervalLr.setStatus(status);
 			}
 			if (CommonUtils.isNotNull(buildStatus)) {
-				intervalLr.setBuildStatus(Integer.parseInt(buildStatus));
+				intervalLr.setBuildStatus(buildStatus);
 			}
 			if (CommonUtils.isNotNull(buildDate)) {
 				intervalLr.setBuildDate(df.parse(buildDate));
@@ -282,7 +276,7 @@ public class ProjectInfoBasicController extends BaseController {
 				intervalLr.setThroughDate(df.parse(throughDate));
 			}
 			if (CommonUtils.isNotNull(ringNum)) {
-				intervalLr.setRingNum(Integer.parseInt(ringNum));
+				intervalLr.setRingNum(ringNum);
 			}
 			if (CommonUtils.isNotNull(machineNo)) {
 				intervalLr.setMachineNo(machineNo);
@@ -303,13 +297,13 @@ public class ProjectInfoBasicController extends BaseController {
 				intervalLr.setMachineReviewDate(df.parse(machineReviewDate));
 			}
 			if (CommonUtils.isNotNull(cutterPhotoId)) {
-				intervalLr.setCutterPhotoId(Long.parseLong(cutterPhotoId));
+				intervalLr.setCutterPhotoId(cutterPhotoId);
 			}
 			if (CommonUtils.isNotNull(slurryPhotoId)) {
-				intervalLr.setSlurryPhotoId(Long.parseLong(slurryPhotoId));
+				intervalLr.setSlurryPhotoId(slurryPhotoId);
 			}
 			if (CommonUtils.isNotNull(screwPhotoId)) {
-				intervalLr.setScrewPhotoId(Long.parseLong(screwPhotoId));
+				intervalLr.setScrewPhotoId(screwPhotoId);
 			}
 			if (CommonUtils.isNotNull(remark)) {
 				intervalLr.setRemark(remark);
@@ -352,11 +346,10 @@ public class ProjectInfoBasicController extends BaseController {
 	@SysControllorLog(menu = "项目概况管理", opreate = "线路删除")
 	@RequestMapping(value = "/lineinfo/delete", method = RequestMethod.POST)
 	@ResponseBody
-	public CommonResponse deleteLineinfo() {
+	public CommonResponse deleteLineinfo(@RequestParam("lineId") Long lineId) {
 		CommonResponse commonResponse = new CommonResponse();
 		try {
-			String lineId = request.getParameter("lineId");
-			boolean result = lineService.deleteObj(Long.parseLong(lineId));
+			boolean result = lineService.deleteObj(lineId);
 			if (result) { // 删除成功
 				rightService.setRightDatasByUserId(getCurrentUser().getId());
 				commonResponse.setCode(Constants.CODE_SUCCESS);
@@ -377,14 +370,16 @@ public class ProjectInfoBasicController extends BaseController {
 	/**
 	 * 区间编辑页面
 	 * 
+	 * @param intervalId
 	 * @return
 	 */
 	@RequestMapping("/intervalinfo/to-edit")
-	public ModelAndView lrinfoToEdit() {
-		String intervalId = request.getParameter("intervalId");
-		MetroLineInterval interval = intervalService.findObjById(Long.parseLong(intervalId));
+	public ModelAndView lrinfoToEdit(@RequestParam("intervalId") Long intervalId) {
+
+		MetroLineInterval interval = intervalService.findObjById(intervalId);
 		JModelAndView mv = new JModelAndView("/project-info/item_generalize_interval_edit", request, response);
 		mv.addObject("model", interval);
+
 		return mv;
 	}
 
@@ -394,11 +389,10 @@ public class ProjectInfoBasicController extends BaseController {
 	@SysControllorLog(menu = "项目概况管理", opreate = "区间删除")
 	@RequestMapping(value = "/intervalinfo/delete", method = RequestMethod.POST)
 	@ResponseBody
-	public CommonResponse deleteIntervalinfo() {
+	public CommonResponse deleteIntervalinfo(@RequestParam("intervalId") Long intervalId) {
 		CommonResponse commonResponse = new CommonResponse();
 		try {
-			String intervalId = request.getParameter("intervalId");
-			boolean result = intervalService.deleteObj(Long.parseLong(intervalId));
+			boolean result = intervalService.deleteObj(intervalId);
 			if (result) { // 删除成功
 				rightService.setRightDatasByUserId(getCurrentUser().getId());
 				commonResponse.setCode(Constants.CODE_SUCCESS);
@@ -422,10 +416,9 @@ public class ProjectInfoBasicController extends BaseController {
 	 * @return
 	 */
 	@RequestMapping("/lineinfo")
-	public String lineinfo() {
-		String lineId = request.getParameter("lineId");
-		String active = request.getParameter("active");
-		MetroLine line = lineService.findObjById(Long.parseLong(lineId));
+	public String lineinfo(@RequestParam("lineId") Long lineId,
+			@RequestParam(value = "active", required = false) String active) {
+		MetroLine line = lineService.findObjById(lineId);
 		request.setAttribute("line", line);
 		request.setAttribute("active", active);
 		return "/project-info/item_generalize_line";
@@ -434,21 +427,25 @@ public class ProjectInfoBasicController extends BaseController {
 	/**
 	 * 区间信息
 	 * 
+	 * @param intervalId
+	 * @param active
 	 * @return
 	 */
 	@RequestMapping("/intervalinfo")
-	public String intervalinfo() {
-		String intervalId = request.getParameter("intervalId");
-		MetroLineInterval interval = intervalService.findObjById(Long.parseLong(intervalId));
+	public String intervalinfo(@RequestParam("intervalId") Long intervalId,
+			@RequestParam(value = "active", required = false) String active) {
+
+		MetroLineInterval interval = intervalService.findObjById(intervalId);
 		List<MetroPhoto> cutterPhotos = photoService.findByType(1);
 		List<MetroPhoto> screwPhotos = photoService.findByType(2);
 		List<MetroPhoto> slurryPhotos = photoService.findByType(3);
-		String active = request.getParameter("active");
+
 		request.setAttribute("active", active);
 		request.setAttribute("interval", interval);
 		request.setAttribute("cutterPhotos", cutterPhotos);
 		request.setAttribute("screwPhotos", screwPhotos);
 		request.setAttribute("slurryPhotos", slurryPhotos);
+
 		return "/project-info/item_generalize_area";
 	}
 
@@ -494,6 +491,8 @@ public class ProjectInfoBasicController extends BaseController {
 	/**
 	 * 线路工程文件上传
 	 * 
+	 * @param lineId
+	 * @param file
 	 * @return
 	 */
 	@SysControllorLog(menu = "项目概况管理", opreate = "线路工程文件上传")
@@ -536,6 +535,8 @@ public class ProjectInfoBasicController extends BaseController {
 	/**
 	 * 线路区间工程文件上传
 	 * 
+	 * @param intervalId
+	 * @param file
 	 * @return
 	 */
 	@SysControllorLog(menu = "项目概况管理", opreate = "区间工程文件上传")
@@ -638,11 +639,10 @@ public class ProjectInfoBasicController extends BaseController {
 	@SysControllorLog(menu = "项目概况管理", opreate = "城市工程文件删除")
 	@RequestMapping(value = "/city-pdf/delete", method = RequestMethod.POST)
 	@ResponseBody
-	public CommonResponse deleteCityProjectPdf() {
+	public CommonResponse deleteCityProjectPdf(@RequestParam("cityId") Long cityId) {
 		CommonResponse commonResponse = new CommonResponse();
 		try {
-			String cityId = request.getParameter("cityId");
-			boolean result = cityService.editProjectPdfUrl(Long.parseLong(cityId), null);
+			boolean result = cityService.editProjectPdfUrl(cityId, null);
 			if (result) { // 删除成功
 				commonResponse.setCode(Constants.CODE_SUCCESS);
 				commonResponse.setResult("删除成功");
@@ -661,16 +661,18 @@ public class ProjectInfoBasicController extends BaseController {
 
 	/**
 	 * 线路工程文件删除
+	 * 
+	 * @param lineId
+	 * @return
 	 */
 	@SysControllorLog(menu = "项目概况管理", opreate = "线路工程文件删除")
 	@RequestMapping(value = "/line-pdf/delete", method = RequestMethod.POST)
 	@ResponseBody
-	public CommonResponse deleteLineProjectPdf() {
+	public CommonResponse deleteLineProjectPdf(@RequestParam("lineId") Long lineId) {
 		CommonResponse commonResponse = new CommonResponse();
 		try {
-			String lineId = request.getParameter("lineId");
 			MetroLine line = new MetroLine();
-			line.setId(Long.parseLong(lineId));
+			line.setId(lineId);
 			line.setProjectPdfUrl("");
 			boolean result = lineService.updateObj(line);
 			if (result) { // 删除成功
@@ -695,12 +697,11 @@ public class ProjectInfoBasicController extends BaseController {
 	@SysControllorLog(menu = "项目概况管理", opreate = "区间工程文件删除")
 	@RequestMapping(value = "/interval-pdf/delete", method = RequestMethod.POST)
 	@ResponseBody
-	public CommonResponse deleteLineIntervalProjectPdf() {
+	public CommonResponse deleteLineIntervalProjectPdf(@RequestParam("intervalId") Long intervalId) {
 		CommonResponse commonResponse = new CommonResponse();
 		try {
-			String intervalId = request.getParameter("intervalId");
 			MetroLineInterval interval = new MetroLineInterval();
-			interval.setId(Long.parseLong(intervalId));
+			interval.setId(intervalId);
 			interval.setProjectPdfUrl("");
 			boolean result = intervalService.updateObj(interval);
 			if (result) { // 删除成功

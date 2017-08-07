@@ -83,9 +83,8 @@ public class ProjectInfoIntervalController extends BaseController {
 	 * @return
 	 */
 	@RequestMapping("/spinfo/to-edit")
-	public ModelAndView spinfoToEdit() {
-		String id = request.getParameter("id");
-		MetroLineIntervalSp sp = lineIntervalSpService.findObjById(Long.parseLong(id));
+	public ModelAndView spinfoToEdit(@RequestParam("id") Long id) {
+		MetroLineIntervalSp sp = lineIntervalSpService.findObjById(id);
 		JModelAndView mv = new JModelAndView("/project-info/item_section_right_edit", request, response);
 		mv.addObject("model", sp);
 		return mv;
@@ -97,11 +96,10 @@ public class ProjectInfoIntervalController extends BaseController {
 	@SysControllorLog(menu = "区间数据管理", opreate = "删除沉降点")
 	@RequestMapping(value = "/spinfo/delete", method = RequestMethod.POST)
 	@ResponseBody
-	public CommonResponse deleteSpinfo() {
+	public CommonResponse deleteSpinfo(@RequestParam("id") Long id) {
 		CommonResponse commonResponse = new CommonResponse();
 		try {
-			String id = request.getParameter("id");
-			boolean result = lineIntervalSpService.deleteObj(Long.parseLong(id));
+			boolean result = lineIntervalSpService.deleteObj(id);
 			if (result) { // 删除成功
 				commonResponse.setCode(Constants.CODE_SUCCESS);
 				commonResponse.setResult("删除成功");
@@ -124,11 +122,10 @@ public class ProjectInfoIntervalController extends BaseController {
 	@SysControllorLog(menu = "区间数据管理", opreate = "删除管片姿态")
 	@RequestMapping(value = "/sainfo/delete", method = RequestMethod.POST)
 	@ResponseBody
-	public CommonResponse deleteSainfo() {
+	public CommonResponse deleteSainfo(@RequestParam("id") Long id) {
 		CommonResponse commonResponse = new CommonResponse();
 		try {
-			String id = request.getParameter("id");
-			boolean result = lineIntervalSaService.deleteObj(Long.parseLong(id));
+			boolean result = lineIntervalSaService.deleteObj(id);
 			if (result) { // 删除成功
 				commonResponse.setCode(Constants.CODE_SUCCESS);
 				commonResponse.setResult("删除成功");
@@ -151,11 +148,10 @@ public class ProjectInfoIntervalController extends BaseController {
 	@SysControllorLog(menu = "区间数据管理", opreate = "删除盾尾间隙")
 	@RequestMapping(value = "/stinfo/delete", method = RequestMethod.POST)
 	@ResponseBody
-	public CommonResponse deleteStinfo() {
+	public CommonResponse deleteStinfo(@RequestParam("id") Long id) {
 		CommonResponse commonResponse = new CommonResponse();
 		try {
-			String id = request.getParameter("id");
-			boolean result = lineIntervalStService.deleteObj(Long.parseLong(id));
+			boolean result = lineIntervalStService.deleteObj(id);
 			if (result) { // 删除成功
 				commonResponse.setCode(Constants.CODE_SUCCESS);
 				commonResponse.setResult("删除成功");
@@ -174,16 +170,18 @@ public class ProjectInfoIntervalController extends BaseController {
 
 	/**
 	 * 删除沉降点监测上传记录信息 删除文件的同时，需要删除文件对应的数据
+	 * 
+	 * @param id
+	 * @return
 	 */
 	@SysControllorLog(menu = "区间数据管理", opreate = "删除沉降点监测文件")
 	@RequestMapping(value = "/mdreinfo/delete", method = RequestMethod.POST)
 	@ResponseBody
-	public CommonResponse deleteMdreinfo() {
+	public CommonResponse deleteMdreinfo(@RequestParam("id") Long id) {
 		CommonResponse commonResponse = new CommonResponse();
 		try {
 			// 需要获取文件解析并删除两个表记录
-			String id = request.getParameter("id");
-			boolean result = lineIntervalMdReService.deleteLineIntervalMdReInfo(Long.parseLong(id));
+			boolean result = lineIntervalMdReService.deleteLineIntervalMdReInfo(id);
 			if (result) { // 删除成功
 				commonResponse.setCode(Constants.CODE_SUCCESS);
 				commonResponse.setResult("删除成功");
@@ -203,15 +201,19 @@ public class ProjectInfoIntervalController extends BaseController {
 	/**
 	 * 加载区间数据信息页面
 	 * 
+	 * @param intervalId
+	 * @param desc
 	 * @return
 	 */
 	@RequestMapping("/intervalinfo")
-	public String intervalinfo() {
-		String intervalId = request.getParameter("intervalId");
-		String desc = request.getParameter("desc");
-		MetroLineIntervalPp pp = lineIntervalPpService.findByIntervalId(Long.parseLong(intervalId));
-		MetroLineInterval interval = lineIntervalService.findObjById(Long.parseLong(intervalId));
+	public String intervalinfo(
+			@RequestParam Long intervalId, 
+			@RequestParam(required = false) String desc) {
+		
+		MetroLineIntervalPp pp = lineIntervalPpService.findByIntervalId(intervalId);
+		MetroLineInterval interval = lineIntervalService.findObjById(intervalId);
 		PageResultSet<MetroDictionary> dicSet = dictionaryService.findMetroDictionaryInfo(0, 1000);
+		
 		request.setAttribute("pp", pp);
 		request.setAttribute("intervalId", intervalId);
 		request.setAttribute("interval", interval);
@@ -220,6 +222,7 @@ public class ProjectInfoIntervalController extends BaseController {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy年MM月dd日");
 		request.setAttribute("beginTime", sdf.format(Calendar.getInstance().getTime()));
 		request.setAttribute("dics", dicSet.getList());
+		
 		return "/project-info/item_section_right";
 	}
 
@@ -333,48 +336,51 @@ public class ProjectInfoIntervalController extends BaseController {
 	/**
 	 * 分页查找区间沉降点信息
 	 * 
+	 * @param intervalId
+	 * @param pageNum
+	 * @param pageSize
 	 * @return
 	 */
 	@RequestMapping("/spinfo/find")
 	@ResponseBody
-	public PageResultSet<MetroLineIntervalSp> findSpinfo() {
-		String intervalId = request.getParameter("intervalId");
-		int pageNum = StringUtil.nullToInt(request.getParameter("pageNum"));
-		int pageSize = StringUtil.nullToInt(request.getParameter("pageSize"));
-		PageResultSet<MetroLineIntervalSp> resultSet = lineIntervalSpService
-				.findLineIntervalSpInfo(Long.parseLong(intervalId), pageNum, pageSize);
+	public PageResultSet<MetroLineIntervalSp> findSpinfo(@RequestParam("intervalId") Long intervalId,
+			@RequestParam("pageNum") int pageNum, @RequestParam("pageSize") int pageSize) {
+		PageResultSet<MetroLineIntervalSp> resultSet = lineIntervalSpService.findLineIntervalSpInfo(intervalId, pageNum,
+				pageSize);
 		return resultSet;
 	}
 
 	/**
 	 * 分页查找区间盾尾间隙信息
 	 * 
+	 * @param intervalId
+	 * @param pageNum
+	 * @param pageSize
 	 * @return
 	 */
 	@RequestMapping("/stinfo/find")
 	@ResponseBody
-	public PageResultSet<MetroLineIntervalSt> findStinfo() {
-		String intervalId = request.getParameter("intervalId");
-		int pageNum = StringUtil.nullToInt(request.getParameter("pageNum"));
-		int pageSize = StringUtil.nullToInt(request.getParameter("pageSize"));
-		PageResultSet<MetroLineIntervalSt> resultSet = lineIntervalStService
-				.findLineIntervalStInfo(Long.parseLong(intervalId), pageNum, pageSize);
+	public PageResultSet<MetroLineIntervalSt> findStinfo(@RequestParam("intervalId") Long intervalId,
+			@RequestParam("pageNum") int pageNum, @RequestParam("pageSize") int pageSize) {
+		PageResultSet<MetroLineIntervalSt> resultSet = lineIntervalStService.findLineIntervalStInfo(intervalId, pageNum,
+				pageSize);
 		return resultSet;
 	}
 
 	/**
 	 * 分页查找区间管片姿态信息
 	 * 
+	 * @param intervalId
+	 * @param pageNum
+	 * @param pageSize
 	 * @return
 	 */
 	@RequestMapping("/sainfo/find")
 	@ResponseBody
-	public PageResultSet<MetroLineIntervalSa> findSainfo() {
-		String intervalId = request.getParameter("intervalId");
-		int pageNum = StringUtil.nullToInt(request.getParameter("pageNum"));
-		int pageSize = StringUtil.nullToInt(request.getParameter("pageSize"));
-		PageResultSet<MetroLineIntervalSa> resultSet = lineIntervalSaService
-				.findLineIntervalSaInfo(Long.parseLong(intervalId), pageNum, pageSize);
+	public PageResultSet<MetroLineIntervalSa> findSainfo(@RequestParam("intervalId") Long intervalId,
+			@RequestParam("pageNum") int pageNum, @RequestParam("pageSize") int pageSize) {
+		PageResultSet<MetroLineIntervalSa> resultSet = lineIntervalSaService.findLineIntervalSaInfo(intervalId, pageNum,
+				pageSize);
 		return resultSet;
 	}
 
@@ -385,12 +391,10 @@ public class ProjectInfoIntervalController extends BaseController {
 	 */
 	@RequestMapping("/mdreinfo/find")
 	@ResponseBody
-	public PageResultSet<MetroLineIntervalMdRe> findMdreinfo() {
-		String intervalId = request.getParameter("intervalId");
-		int pageNum = StringUtil.nullToInt(request.getParameter("pageNum"));
-		int pageSize = StringUtil.nullToInt(request.getParameter("pageSize"));
-		PageResultSet<MetroLineIntervalMdRe> resultSet = lineIntervalMdReService
-				.findLineIntervalMdReInfo(Long.parseLong(intervalId), pageNum, pageSize);
+	public PageResultSet<MetroLineIntervalMdRe> findMdreinfo(@RequestParam("intervalId") Long intervalId,
+			@RequestParam("pageNum") int pageNum, @RequestParam("pageSize") int pageSize) {
+		PageResultSet<MetroLineIntervalMdRe> resultSet = lineIntervalMdReService.findLineIntervalMdReInfo(intervalId,
+				pageNum, pageSize);
 		return resultSet;
 	}
 
@@ -401,12 +405,10 @@ public class ProjectInfoIntervalController extends BaseController {
 	 */
 	@RequestMapping("/riskinfo/find")
 	@ResponseBody
-	public PageResultSet<MetroLineIntervalRp> findRiskinfo() {
-		String intervalId = request.getParameter("intervalId");
-		int pageNum = StringUtil.nullToInt(request.getParameter("pageNum"));
-		int pageSize = StringUtil.nullToInt(request.getParameter("pageSize"));
-		PageResultSet<MetroLineIntervalRp> resultSet = lineIntervalRpService
-				.findLineIntervalRpInfo(Long.parseLong(intervalId), pageNum, pageSize);
+	public PageResultSet<MetroLineIntervalRp> findRiskinfo(@RequestParam("intervalId") Long intervalId,
+			@RequestParam("pageNum") int pageNum, @RequestParam("pageSize") int pageSize) {
+		PageResultSet<MetroLineIntervalRp> resultSet = lineIntervalRpService.findLineIntervalRpInfo(intervalId, pageNum,
+				pageSize);
 		return resultSet;
 	}
 
@@ -417,9 +419,8 @@ public class ProjectInfoIntervalController extends BaseController {
 	 */
 	@RequestMapping("/riskinfo/to-edit")
 	@ResponseBody
-	public MetroLineIntervalRp riskinfoToEdit() {
-		String id = request.getParameter("id");
-		MetroLineIntervalRp rp = lineIntervalRpService.findObjById(Long.parseLong(id));
+	public MetroLineIntervalRp riskinfoToEdit(@RequestParam("id") Long id) {
+		MetroLineIntervalRp rp = lineIntervalRpService.findObjById(id);
 		return rp;
 	}
 
@@ -481,11 +482,10 @@ public class ProjectInfoIntervalController extends BaseController {
 	@SysControllorLog(menu = "区间数据管理", opreate = "删除风险位置")
 	@RequestMapping(value = "/riskinfo/delete", method = RequestMethod.POST)
 	@ResponseBody
-	public CommonResponse deleteRiskinfo() {
+	public CommonResponse deleteRiskinfo(@RequestParam("id") Long id) {
 		CommonResponse commonResponse = new CommonResponse();
 		try {
-			String id = request.getParameter("id");
-			boolean result = lineIntervalRpService.deleteObj(Long.parseLong(id));
+			boolean result = lineIntervalRpService.deleteObj(id);
 			if (result) { // 删除成功
 				commonResponse.setCode(Constants.CODE_SUCCESS);
 				commonResponse.setResult("删除成功");
@@ -750,13 +750,10 @@ public class ProjectInfoIntervalController extends BaseController {
 	@SysControllorLog(menu = "区间数据管理", opreate = "导出沉降点数据")
 	@RequestMapping(value = "/spinfo/export", method = RequestMethod.POST)
 	@ResponseBody
-	public CommonResponse exportLrinfo() {
+	public CommonResponse exportLrinfo(@RequestParam("intervalId") Long intervalId, @RequestParam("desc") String desc) {
 		CommonResponse commonResponse = new CommonResponse();
 		try {
-			String intervalId = request.getParameter("intervalId");
-			// String leftOrRight = request.getParameter("leftOrRight");
-			String desc = request.getParameter("desc");
-			List<MetroLineIntervalSp> datas = lineIntervalSpService.findLineIntervalSps(Long.parseLong(intervalId));
+			List<MetroLineIntervalSp> datas = lineIntervalSpService.findLineIntervalSps(intervalId);
 			String excelFileName = writeExcel(datas, desc);
 			if (excelFileName != null) { // 成功
 				commonResponse.setCode(Constants.CODE_SUCCESS);
@@ -780,19 +777,16 @@ public class ProjectInfoIntervalController extends BaseController {
 	@SysControllorLog(menu = "区间数据管理", opreate = "导出盾构数据")
 	@RequestMapping(value = "/sdinfo/export", method = RequestMethod.POST)
 	@ResponseBody
-	public CommonResponse exportShieldinfo() {
+	public CommonResponse exportShieldinfo(@RequestParam("intervalId") Long intervalId,
+			@RequestParam("leftOrRight") String leftOrRight, @RequestParam("ring") String ring,
+			@RequestParam("type") String type, @RequestParam("key") String key) {
 		// TODO @RequestParam替换，以及参数date的格式
 		CommonResponse commonResponse = new CommonResponse();
 		try {
-			String intervalId = request.getParameter("intervalId");
-			String leftOrRight = request.getParameter("leftOrRight");
 			String date = StringUtil.timeCnToEn(request.getParameter("date"));
-			String ring = request.getParameter("ring");
-			String type = request.getParameter("type");
-			String key = request.getParameter("key");
-			Map<String, Object> datas = lineIntervalService.getShieldData(Long.parseLong(intervalId), leftOrRight, date,
-					ring, key, type);
-			MetroLineInterval metroLineInterval = lineIntervalService.findObjById(Long.parseLong(intervalId));
+			Map<String, Object> datas = lineIntervalService.getShieldData(intervalId, leftOrRight, date, ring, key,
+					type);
+			MetroLineInterval metroLineInterval = lineIntervalService.findObjById(intervalId);
 			String intervalName = metroLineInterval.getIntervalName();
 			String machineNo = "";
 			for (MetroLineIntervalLr lr : metroLineInterval.getIntervalLrList()) {
@@ -823,13 +817,10 @@ public class ProjectInfoIntervalController extends BaseController {
 	@SysControllorLog(menu = "区间数据管理", opreate = "导出盾尾间隙数据")
 	@RequestMapping(value = "/stinfo/export", method = RequestMethod.POST)
 	@ResponseBody
-	public CommonResponse exportStinfo() {
+	public CommonResponse exportStinfo(@RequestParam("intervalId") Long intervalId, @RequestParam("desc") String desc) {
 		CommonResponse commonResponse = new CommonResponse();
 		try {
-			String intervalId = request.getParameter("intervalId");
-			// String leftOrRight = request.getParameter("leftOrRight");
-			String desc = request.getParameter("desc");
-			List<MetroLineIntervalSt> datas = lineIntervalStService.findLineIntervalSts(Long.parseLong(intervalId));
+			List<MetroLineIntervalSt> datas = lineIntervalStService.findLineIntervalSts(intervalId);
 			String excelFileName = writeStExcel(datas, desc);
 			if (excelFileName != null) { // 成功
 				commonResponse.setCode(Constants.CODE_SUCCESS);
@@ -853,13 +844,10 @@ public class ProjectInfoIntervalController extends BaseController {
 	@SysControllorLog(menu = "区间数据管理", opreate = "导出管片姿态数据")
 	@RequestMapping(value = "/sainfo/export", method = RequestMethod.POST)
 	@ResponseBody
-	public CommonResponse exportSainfo() {
+	public CommonResponse exportSainfo(@RequestParam("intervalId") Long intervalId, @RequestParam("desc") String desc) {
 		CommonResponse commonResponse = new CommonResponse();
 		try {
-			String intervalId = request.getParameter("intervalId");
-			// String leftOrRight = request.getParameter("leftOrRight");
-			String desc = request.getParameter("desc");
-			List<MetroLineIntervalSa> datas = lineIntervalSaService.findLineIntervalSas(Long.parseLong(intervalId));
+			List<MetroLineIntervalSa> datas = lineIntervalSaService.findLineIntervalSas(intervalId);
 			String excelFileName = writeSaExcel(datas, desc);
 			if (excelFileName != null) { // 成功
 				commonResponse.setCode(Constants.CODE_SUCCESS);
@@ -1311,17 +1299,16 @@ public class ProjectInfoIntervalController extends BaseController {
 	 */
 	@RequestMapping(value = "/md-re/upload", method = RequestMethod.POST)
 	@ResponseBody
-	public CommonResponse uploadLineIntervalMdReData() {
+	public CommonResponse uploadLineIntervalMdReData(@RequestParam("intervalId") Long intervalId) {
+
 		CommonResponse commonResponse = new CommonResponse();
 		try {
-			String intervalId = request.getParameter("intervalId");
 			CommonResponse uploadResult = commonService.fileUpload(request);
 			if (Constants.CODE_SUCCESS != uploadResult.getCode()) { // 上传成功
 				return uploadResult;
 			}
 			String uploadFileUrl = (String) uploadResult.getResult();
-			boolean result = lineIntervalMdReService.uploadLineIntervalMdReData(Long.parseLong(intervalId),
-					uploadFileUrl);
+			boolean result = lineIntervalMdReService.uploadLineIntervalMdReData(intervalId, uploadFileUrl);
 			if (result) { // 上传成功
 				commonResponse.setCode(Constants.CODE_SUCCESS);
 				commonResponse.setResult("上传成功");

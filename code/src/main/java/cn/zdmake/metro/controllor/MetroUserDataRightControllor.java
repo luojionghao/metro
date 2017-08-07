@@ -6,7 +6,6 @@ import java.util.List;
 import cn.zdmake.metro.base.controller.BaseController;
 import cn.zdmake.metro.base.model.CommonResponse;
 import cn.zdmake.metro.base.page.PageResultSet;
-import cn.zdmake.metro.base.utils.StringUtil;
 import cn.zdmake.metro.model.MetroCity;
 import cn.zdmake.metro.model.MetroUser;
 import cn.zdmake.metro.model.MetroUserDataRel;
@@ -18,12 +17,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import cn.zdmake.metro.base.aop.SysControllorLog;
 import cn.zdmake.metro.base.mv.JModelAndView;
-//import cn.zdmake.metro.service.IMetroRoleService;
 
 /**
  * 数据权限管理
@@ -43,8 +42,8 @@ public class MetroUserDataRightControllor extends BaseController {
 	@Autowired
 	private IMetroUserService userService;
 
-//	@Autowired
-//	private IMetroRoleService roleService;
+	// @Autowired
+	// private IMetroRoleService roleService;
 
 	@Autowired
 	private IMetroCityService cityService;
@@ -71,11 +70,10 @@ public class MetroUserDataRightControllor extends BaseController {
 	 */
 	@RequestMapping("/find/users")
 	@ResponseBody
-	public PageResultSet<MetroUser> findUsersAll() {
-		String pageNum = request.getParameter("pageNum");
-		String pageSize = request.getParameter("pageSize");
-		PageResultSet<MetroUser> userResult = userService.findAllUser(StringUtil.nullToInt(pageNum),
-				StringUtil.nullToInt(pageSize));
+	public PageResultSet<MetroUser> findUsersAll(@RequestParam("pageNum") int pageNum,
+			@RequestParam("pageSize") int pageSize) {
+		
+		PageResultSet<MetroUser> userResult = userService.findAllUser(pageNum, pageSize);
 		return userResult;
 	}
 
@@ -86,9 +84,8 @@ public class MetroUserDataRightControllor extends BaseController {
 	 */
 	@SysControllorLog(menu = "数据权限管理", opreate = "编辑数据权限")
 	@RequestMapping("/get/user/data-right")
-	public ModelAndView findUserDataRightByUserId() {
+	public ModelAndView findUserDataRightByUserId(@RequestParam("userId") Long userId) {
 		JModelAndView mv = new JModelAndView("/sysm/smf_data_edit", request, response);
-		String userId = request.getParameter("userId");
 		// 用户的所有数据权限列表
 		List<MetroUserDataRel> udrlist = dataRightService.findUserDataRightByUserId(userId);
 		List<String> authList = new ArrayList<String>();
@@ -97,7 +94,7 @@ public class MetroUserDataRightControllor extends BaseController {
 					rel.getCityId() + ";" + rel.getLineId() + ";" + rel.getIntervalId() + ";" + rel.getLeftOrRight());
 		}
 		// 用户信息
-		MetroUser user = userService.findObjById(Long.parseLong(userId));
+		MetroUser user = userService.findObjById(userId);
 		// 城市地铁线路信息
 		Long cityId = 1l; // 默认广州
 		MetroCity city = cityService.findObjById(cityId);
@@ -117,11 +114,10 @@ public class MetroUserDataRightControllor extends BaseController {
 	 */
 	@RequestMapping(value = "/save/user/data-right", method = RequestMethod.POST)
 	@ResponseBody
-	public CommonResponse saveEditUserDataRight() {
+	public CommonResponse saveEditUserDataRight(@RequestParam("userId") Long userId, @RequestParam("dataRight") String dataRight) {
 		CommonResponse commonResponse = new CommonResponse();
 		try {
-			String userId = request.getParameter("userId");
-			String dataRight = request.getParameter("dataRight");// "1;1;3;l,1;1;3;r" {城市;线路;区间;左右标记}
+			// dataRigth? "1;1;3;l,1;1;3;r" {城市;线路;区间;左右标记}
 			boolean result = dataRightService.saveDataRightInfo(userId, dataRight);
 			if (result) {
 				commonResponse.setCode(1);

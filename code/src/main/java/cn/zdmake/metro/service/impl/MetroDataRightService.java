@@ -17,14 +17,14 @@ public class MetroDataRightService implements IMetroDataRightService {
 	private IMetroDataRightDao drDao;
 	
 	@Override
-	public List<MetroUserDataRel> findUserDataRightByUserId(String userId) {
+	public List<MetroUserDataRel> findUserDataRightByUserId(Long userId) {
 		Map<String, Object> params = new HashMap<>();
 		params.put("userId", userId);		
 		return drDao.findObjsList(params);
 	}
 
 	@Override
-	public boolean saveDataRightInfo(String userId, String dataRight) {
+	public boolean saveDataRightInfo(Long userId, String dataRight) {
 		Map<String, Object> params = new HashMap<>();
 		params.put("userId", userId);
 		drDao.deleteObj(params);
@@ -39,7 +39,7 @@ public class MetroDataRightService implements IMetroDataRightService {
 				udr.setLineId(Long.parseLong(dr[1]));
 				udr.setIntervalId(Long.parseLong(dr[2]));
 				udr.setLeftOrRight(dr[3]);
-				udr.setUserId(Long.parseLong(userId));
+				udr.setUserId(userId);
 				udrlist.add(udr);
 			}
 			params.put("udrlist", udrlist);
