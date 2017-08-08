@@ -633,23 +633,24 @@ public class MetroMonitorInfoCityService implements IMetroMonitorInfoCityService
 	}
 
 	@Override
-	public List<List<Object>> findMonitorStaticTab3(String intervalId, String leftOrRight, String beginDate,
-			String endDate) {
+	public List<List<Object>> findMonitorStaticTab3(String intervalId,
+			String leftOrRight, String beginDate, String endDate) {
 		List<List<Object>> res = new ArrayList<List<Object>>();
 		Map<String, Object> params = new HashMap<>();
 		params.put("intervalId", intervalId);
 		params.put("leftOrRight", leftOrRight);
 		MonitorInfoCity mic = monitorCityDao.findMonitorInfoCity(params);
-		if (mic != null) {
-			String key = IhistorianUtil.getKey(mic.getLineNo(), mic.getIntervalMark(), mic.getLeftOrRight(), "A0001");
+		if(mic!=null){
+			String key = IhistorianUtil.getKey(mic.getLineNo(), 
+						mic.getIntervalMark(), mic.getLeftOrRight(), "A0001");
 			String[] bs = beginDate.split("/");
 			String[] ns = endDate.split("/");
-			String b = bs[2] + "-" + bs[0] + "-" + bs[1];
-			String e = ns[2] + "-" + ns[0] + "-" + ns[1];
+			String b = bs[2]+"-"+bs[0]+"-"+bs[1];
+			String e = ns[2]+"-"+ns[0]+"-"+ns[1];
 			List<Object> times = new ArrayList<Object>();
-
-			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-			Date bd = null, ed = null;
+			
+			SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");
+			Date bd = null,ed = null;
 			try {
 				bd = sdf.parse(b);
 				ed = sdf.parse(e);
@@ -658,17 +659,17 @@ public class MetroMonitorInfoCityService implements IMetroMonitorInfoCityService
 				Calendar cal1 = Calendar.getInstance();
 				cal1.setTime(ed);
 				long now = 0l;
-				while (now <= cal1.getTimeInMillis()) {
+				while(now<=cal1.getTimeInMillis()){
 					times.add(sdf.format(cal.getTime()));
 					now = cal.getTimeInMillis();
 					cal.add(Calendar.DATE, 1);
 				}
 			} catch (ParseException e1) {
-
-			}
+				
+			}			
 			res.add(times);
-			IhistorianResponse ir = IhistorianUtil.getDataByKeyAndTime(key, bd, ed);
-			if (ir != null && ir.getCode() == 200 && ir.getResult() != null) {
+			IhistorianResponse ir = IhistorianUtil.getDataByKeyAndTime(key,bd,ed);			
+			if(ir!=null&&ir.getCode()==200&&ir.getResult()!=null){
 				res.add((List<Object>) ir.getResult().get("list"));
 			}
 
