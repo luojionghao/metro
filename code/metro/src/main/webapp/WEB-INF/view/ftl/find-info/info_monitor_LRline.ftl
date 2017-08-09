@@ -357,7 +357,7 @@
         
         // 选中刀盘
         $("#tab1").tab('show');
-
+        
 	</script>
 </body>
 </html>

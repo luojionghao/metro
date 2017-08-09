@@ -241,6 +241,8 @@
                     <button id="md6" title="发泡剂注入流量 掘进速度" class="">默认模式六</button>
                     <button id="md7" title="注浆量 掘进速度" class="">默认模式七</button>
                     <button id="md8" title="前(后)盾水平偏差 前(后)盾垂直偏差 " class="">默认模式八</button>
+                    <button id="md9" title="推进速度  土压(上) 出土量 刀盘扭矩 刀盘贯入度" class="">默认模式九</button>
+                    <button id="md10" title="推进速度  进浆流量 进浆压力 排浆流量 排浆压力" class="">默认模式十</button>
                 </div>
             </div>
         </div>
@@ -779,7 +781,8 @@
                 case 8:
                     right_axis = 0;
                     option.yAxis = [
-                        {type:'value',name:'mm',position:'left'},
+                        {type:'value',name:'m³',position:'left'},
+                        {type:'value',name:'mm/min',position:'right'},
                     ]
                     break;
                 default:
@@ -1175,8 +1178,7 @@
              */
             tab5(7);
         });
-
-        // 模式八
+        // 模式八选择按钮点击
         $('#md8').on('click',function(){
             /**
              * 参数
@@ -1186,6 +1188,30 @@
              * 尾盾垂直偏差 J0025 'mm/min' 右 index 1
              */
             tab5(8);
+        });
+        // 模式九选择按钮点击
+        $('#md9').on('click',function(){
+            /**
+             * 参数
+             * 推进速度 B0001 mm/min 左 index 0
+             * 切口压力(上) A0004 bar 左 index 1
+             * 出土量 B0015 [R0028*R0029-R0026*R0027] 右 index 2
+             * 刀盘扭矩 B0004 kNm 右 index 3
+             * 刀盘贯入度 B0003 mm/r 右 index 4
+             */
+            tab5(9);
+        });
+        // 模式十选择按钮点击
+        $('#md10').on('click',function(){
+            /**
+             * 参数
+             * 推进速度 B0001 mm/min 左 index 0
+             * 进浆流量  R0026 m³/h 左 index 1
+             * 进浆压力  R0025 Bar 右 index 2
+             * 排浆流量  R0028 m³/h 右 index 3
+             * 排浆压力  R0056 Bar 右 index 4
+             */
+            tab5(10);
         });
 
         function getDataModel(){
