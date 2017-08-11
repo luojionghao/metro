@@ -69,6 +69,8 @@ public class MetroMonitorInfoCityService implements IMetroMonitorInfoCityService
 	private final static String[] MODEL6 = { "B0001", "H0044" };
 	private final static String[] MODEL7 = { "D0023", "B0001" };
 	private final static String[] MODEL8 = { "J0020", "J0021", "J0024", "J0025" };
+	private final static String[] MODEL9 = { "B0001", "J0021", "B0015", "B0004", "B0003" };//R0028*R0029-R0026*R0027 asB0015
+	private final static String[] MODEL10 = { "B0001", "R0026", "R0025", "R0028", "R0056" };
 
 	@Autowired
 	private IMetroMonitorCityDao monitorCityDao;
@@ -924,6 +926,14 @@ public class MetroMonitorInfoCityService implements IMetroMonitorInfoCityService
 				pns = MODEL8;
 				pnames = "前盾水平偏差,前盾垂直偏差,尾盾水平偏差,尾盾垂直偏差".split(",");
 				inxs = "0,0,1,1".split(",");
+			}else if (model == 9) {
+				pns = MODEL9;
+				pnames = "推进速度,切口压力(上),出土量,刀盘扭矩,刀盘贯入度".split(",");
+				inxs = "0,1,2,3,4".split(",");
+			}else if (model == 10) {
+				pns = MODEL10;
+				pnames = "推进速度,进浆流量,进浆压力,排浆流量,排浆压力".split(",");
+				inxs = "0,1,2,3,4".split(",");
 			} else {
 				pns = ks;
 				pnames = kns;

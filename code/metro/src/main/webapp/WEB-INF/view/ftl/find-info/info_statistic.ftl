@@ -1195,7 +1195,7 @@
              * 参数
              * 推进速度 B0001 mm/min 左 index 0
              * 切口压力(上) A0004 bar 左 index 1
-             * 出土量 B0015 [R0028*R0029-R0026*R0027] 右 index 2
+             * 出土量 B0015 [R0028*R0029-R0026*R0027] t/h 右 index 2
              * 刀盘扭矩 B0004 kNm 右 index 3
              * 刀盘贯入度 B0003 mm/r 右 index 4
              */
